@@ -8,7 +8,8 @@
 	<key>ProgramArguments</key>
 	<array>
 		<string>/usr/bin/osascript</string>
-	<string>/Users/jackson/brandcomposer-calendar/update-calendar.scpt</string>	</array>
+	<string>/Users/jackson/brandcomposer-calendar/update-calendar.scpt</string>
+	</array>
 
 	<key>StartInterval</key>
 	<integer>3600</integer>
