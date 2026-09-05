@@ -5,6 +5,9 @@ on:
     - cron: '0 0 * * 0'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   update-calendar:
     runs-on: ubuntu-latest
@@ -29,8 +32,10 @@ jobs:
           SCRIPT=$(echo "$RESPONSE" | jq -r '.content[0].text')
           echo "$SCRIPT" > update-calendar.scpt
       - name: Commit and push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "BrandComposer Bot"
           git config user.email "calendar@brandcomposer.local"
           git add update-calendar.scpt
-          git diff --cached --quiet || (git commit -m "Auto-update calendar" && git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/jacksonwatkinsdesign-source/brandcomposer-calendar.git)
+          git diff --cached --quiet || (git commit -m "Auto-update calendar" && git push)
