@@ -33,8 +33,11 @@ COUNT_SPREAD = 3
 MAX_PER_DAY = 7
 ALLOWED_TIMES = {"9:00:00 AM", "1:00:00 PM", "7:00:00 PM"}
 
+# Tolerant of the formatting variations AppleScript accepts: optional spaces
+# around colons, and `date "..."` with or without wrapping parentheses.
 EVENT_RE = re.compile(
-    r'summary:"(?P<summary>.*?)",\s*start date:date "(?P<start>.*?)"'
+    r'summary\s*:\s*"(?P<summary>.*?)"\s*,\s*'
+    r'start\s+date\s*:\s*\(?\s*date\s+"(?P<start>.*?)"'
 )
 
 failures, warnings = [], []
@@ -53,6 +56,29 @@ try:
 except OSError as e:
     print(f"FATAL  cannot read {SCRIPT}: {e}")
     sys.exit(2)
+
+# Models often wrap code in a markdown fence despite being told not to.
+# Strip it rather than failing over formatting.
+fenced = re.search(r"```(?:applescript|scpt)?\s*\n(.*?)```", text, re.S)
+if fenced:
+    print("NOTE   output was wrapped in a markdown code fence; unwrapping")
+    text = fenced.group(1)
+    # Write it back — a fence left in place would break osascript at run time.
+    with open(SCRIPT, "w", encoding="utf-8") as fh:
+        fh.write(text)
+
+
+def dump_head(reason):
+    """Show what the generator actually produced, so a parse failure is diagnosable."""
+    print(f"FATAL  {reason}")
+    lines = text.splitlines()
+    print(f"       {len(lines)} lines, {len(text)} characters. First 40 lines:")
+    print("       " + "-" * 60)
+    for i, line in enumerate(lines[:40], 1):
+        print(f"       {i:>3} | {line[:200]}")
+    if len(lines) > 40:
+        print(f"       ... {len(lines) - 40} more lines")
+    print("       " + "-" * 60)
 
 events = []
 for m in EVENT_RE.finditer(text):
@@ -76,7 +102,7 @@ for m in EVENT_RE.finditer(text):
     })
 
 if not events:
-    print("FATAL  no events parsed — generator likely returned prose or an error")
+    dump_head("no events parsed — nothing matched the expected event format")
     sys.exit(2)
 
 # --- structural -------------------------------------------------------------
