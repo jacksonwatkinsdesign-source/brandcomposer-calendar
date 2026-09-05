@@ -33,4 +33,4 @@ jobs:
           git config user.name "BrandComposer Bot"
           git config user.email "calendar@brandcomposer.local"
           git add update-calendar.scpt
-          git diff --cached --quiet || (git commit -m "Auto-update calendar" && git push)
+          git diff --cached --quiet || (git commit -m "Auto-update calendar" && git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/jacksonwatkinsdesign-source/brandcomposer-calendar.git)
