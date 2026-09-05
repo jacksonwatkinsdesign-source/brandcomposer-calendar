@@ -1,212 +1,172 @@
--- BrandComposer Calendar Update Script
--- This script creates all illustration posting events in the BrandComposer calendar
--- Usage: osascript update-calendar.scpt
-
-use AppleScript version "2.4"
-use scripting additions
-use framework "Foundation"
-
--- Get the current user's calendar store
-set calendarApp to application "Calendar"
-tell calendarApp
-	-- Get or create BrandComposer calendar
-	set brandComposerCalendar to calendar "BrandComposer"
-end tell
-
--- Helper function to create an event
-on createEvent(calendarObj, theTitle, startDateTime, endDateTime, theColor, theNotes)
-	tell application "Calendar"
-		set newEvent to make new event at end of events of calendarObj with properties ¬
-			{summary:theTitle, start date:startDateTime, end date:endDateTime, description:theNotes}
-
-		-- Set color (5 = green/hook, 8 = graphite/baseline)
-		tell newEvent
-			set color to theColor
-		end tell
-
-		return newEvent
-	end tell
-end createEvent
-
--- Convert time string to date
-on createDatetime(dateString, timeString)
-	set dateFormat to "yyyy-MM-dd HH:mm:ss"
-	set fullString to dateString & " " & timeString
-	set formatter to current application's class "NSDateFormatter"
-	set dateFormatter to formatter's new()
-	dateFormatter's setDateFormat:dateFormat
-	return dateFormatter's dateFromString:fullString
-end createDatetime
-
--- Begin creating events
 tell application "Calendar"
+	set bc_cal to calendar "BrandComposer"
+	
 	-- SEPTEMBER 2026
-	createEvent(brandComposerCalendar, "[STORY] Karlie — Rotation baseline", createDatetime("2026-09-03", "13:00:00"), createDatetime("2026-09-03", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Núria — Rotation baseline", createDatetime("2026-09-04", "13:00:00"), createDatetime("2026-09-04", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Paula — Rotation baseline", createDatetime("2026-09-05", "13:00:00"), createDatetime("2026-09-05", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Kate Bartlett — Rotation baseline", createDatetime("2026-09-06", "19:00:00"), createDatetime("2026-09-06", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Erin — Rotation baseline", createDatetime("2026-09-09", "19:00:00"), createDatetime("2026-09-09", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[POST] Odessa II — Debut carousel, Stranger Things S2 momentum", createDatetime("2026-09-10", "09:00:00"), createDatetime("2026-09-10", "09:15:00"), 5, "DEBUT: Odessa II (2-slide carousel). Stranger Things: Tales from '85 Season 2 momentum. All slides same day (9am, 1pm, 7pm).")
-	createEvent(brandComposerCalendar, "[STORY] Odessa II Slide 2 — Carousel continuation", createDatetime("2026-09-10", "13:00:00"), createDatetime("2026-09-10", "13:15:00"), 5, "Carousel slide 2 of 2. Part of Odessa II debut.")
-	createEvent(brandComposerCalendar, "[STORY] Odessa II Grid post — Debut carousel", createDatetime("2026-09-10", "19:00:00"), createDatetime("2026-09-10", "19:15:00"), 5, "Grid post story. Part of Odessa II debut.")
-	createEvent(brandComposerCalendar, "[STORY] Amelie — Rotation baseline", createDatetime("2026-09-11", "13:00:00"), createDatetime("2026-09-11", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Lily Collins — Rotation baseline", createDatetime("2026-09-12", "13:00:00"), createDatetime("2026-09-12", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Renate — Rotation baseline", createDatetime("2026-09-13", "19:00:00"), createDatetime("2026-09-13", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Rebecca — Rotation baseline", createDatetime("2026-09-16", "19:00:00"), createDatetime("2026-09-16", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Odessa — Stranger Things: Tales from '85 S2 Premiere", createDatetime("2026-09-17", "13:00:00"), createDatetime("2026-09-17", "13:15:00"), 5, "HOOK: Stranger Things: Tales from '85 Season 2 Premiere (Sept 17, 2026). Reshare tied to premiere day.")
-	createEvent(brandComposerCalendar, "[STORY] Gracie Abrams — Rotation baseline", createDatetime("2026-09-18", "13:00:00"), createDatetime("2026-09-18", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Zendaya — Rotation baseline", createDatetime("2026-09-19", "13:00:00"), createDatetime("2026-09-19", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Romy — Rotation baseline", createDatetime("2026-09-20", "19:00:00"), createDatetime("2026-09-20", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Elle — Rotation baseline", createDatetime("2026-09-23", "19:00:00"), createDatetime("2026-09-23", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[POST] Olivia II — Debut carousel, Rodrigo Unraveled Tour launch (9/25)", createDatetime("2026-09-24", "09:00:00"), createDatetime("2026-09-24", "09:15:00"), 5, "DEBUT: Olivia II (2-slide carousel). Olivia Rodrigo Unraveled Tour launches Sept 25. All slides same day (9am, 1pm, 7pm).")
-	createEvent(brandComposerCalendar, "[STORY] Olivia II Slide 2 — Carousel continuation", createDatetime("2026-09-24", "13:00:00"), createDatetime("2026-09-24", "13:15:00"), 5, "Carousel slide 2 of 2. Part of Olivia II debut.")
-	createEvent(brandComposerCalendar, "[STORY] Olivia II Grid post — Debut carousel", createDatetime("2026-09-24", "19:00:00"), createDatetime("2026-09-24", "19:15:00"), 5, "Grid post story. Part of Olivia II debut.")
-	createEvent(brandComposerCalendar, "EXTERNAL HOOK: Olivia Rodrigo Unraveled Tour begins Hartford", createDatetime("2026-09-25", "09:00:00"), createDatetime("2026-09-25", "17:00:00"), 5, "Tour launch date. 86-date world tour Sept 25, 2026 - May 10, 2027. Supports Olivia II debut momentum.")
-	createEvent(brandComposerCalendar, "[STORY] Anya — Rotation baseline", createDatetime("2026-09-26", "13:00:00"), createDatetime("2026-09-26", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Karlie — Rotation baseline (30-day reset from 9/3)", createDatetime("2026-09-27", "19:00:00"), createDatetime("2026-09-27", "19:15:00"), 8, "30-day rotation baseline. Restarting 30-day cycle from 9/3.")
-	createEvent(brandComposerCalendar, "[STORY] Núria — Rotation baseline", createDatetime("2026-09-30", "19:00:00"), createDatetime("2026-09-30", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Karlie — Rotation baseline", start date:date "Friday, September 3, 2026 1:00:00 PM", end date:date "Friday, September 3, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Núria — Rotation baseline", start date:date "Saturday, September 4, 2026 1:00:00 PM", end date:date "Saturday, September 4, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Paula — Rotation baseline", start date:date "Sunday, September 5, 2026 1:00:00 PM", end date:date "Sunday, September 5, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Kate Bartlett — Rotation baseline", start date:date "Monday, September 6, 2026 7:00:00 PM", end date:date "Monday, September 6, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Erin — Rotation baseline", start date:date "Thursday, September 9, 2026 7:00:00 PM", end date:date "Thursday, September 9, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[POST] Odessa II — Debut carousel, Stranger Things S2 momentum", start date:date "Friday, September 10, 2026 9:00:00 AM", end date:date "Friday, September 10, 2026 9:15:00 AM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Odessa II Slide 2 — Carousel continuation", start date:date "Friday, September 10, 2026 1:00:00 PM", end date:date "Friday, September 10, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Odessa II Grid post — Debut carousel", start date:date "Friday, September 10, 2026 7:00:00 PM", end date:date "Friday, September 10, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Amelie — Rotation baseline", start date:date "Saturday, September 11, 2026 1:00:00 PM", end date:date "Saturday, September 11, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Lily Collins — Rotation baseline", start date:date "Sunday, September 12, 2026 1:00:00 PM", end date:date "Sunday, September 12, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Renate — Rotation baseline", start date:date "Monday, September 13, 2026 7:00:00 PM", end date:date "Monday, September 13, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Rebecca — Rotation baseline", start date:date "Thursday, September 16, 2026 7:00:00 PM", end date:date "Thursday, September 16, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Odessa — Stranger Things: Tales from 85 S2 Premiere", start date:date "Friday, September 17, 2026 1:00:00 PM", end date:date "Friday, September 17, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Gracie Abrams — Rotation baseline", start date:date "Saturday, September 18, 2026 1:00:00 PM", end date:date "Saturday, September 18, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Zendaya — Rotation baseline", start date:date "Sunday, September 19, 2026 1:00:00 PM", end date:date "Sunday, September 19, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Romy — Rotation baseline", start date:date "Monday, September 20, 2026 7:00:00 PM", end date:date "Monday, September 20, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Elle — Rotation baseline", start date:date "Thursday, September 23, 2026 7:00:00 PM", end date:date "Thursday, September 23, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[POST] Olivia II — Debut carousel, Rodrigo Unraveled Tour launch", start date:date "Friday, September 24, 2026 9:00:00 AM", end date:date "Friday, September 24, 2026 9:15:00 AM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Olivia II Slide 2 — Carousel continuation", start date:date "Friday, September 24, 2026 1:00:00 PM", end date:date "Friday, September 24, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Olivia II Grid post — Debut carousel", start date:date "Friday, September 24, 2026 7:00:00 PM", end date:date "Friday, September 24, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"EXTERNAL HOOK: Olivia Rodrigo Unraveled Tour begins", start date:date "Saturday, September 25, 2026 9:00:00 AM", end date:date "Saturday, September 25, 2026 5:00:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Anya — Rotation baseline", start date:date "Sunday, September 26, 2026 1:00:00 PM", end date:date "Sunday, September 26, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Karlie — Rotation baseline (30-day reset)", start date:date "Monday, September 27, 2026 7:00:00 PM", end date:date "Monday, September 27, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Núria — Rotation baseline", start date:date "Thursday, September 30, 2026 7:00:00 PM", end date:date "Thursday, September 30, 2026 7:15:00 PM"}
+	
 	-- OCTOBER 2026
-	createEvent(brandComposerCalendar, "[STORY] Paula — Rotation baseline", createDatetime("2026-10-01", "13:00:00"), createDatetime("2026-10-01", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Kate Bartlett — Rotation baseline", createDatetime("2026-10-02", "13:00:00"), createDatetime("2026-10-02", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Erin — Rotation baseline", createDatetime("2026-10-03", "13:00:00"), createDatetime("2026-10-03", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Amelie — Rotation baseline", createDatetime("2026-10-06", "19:00:00"), createDatetime("2026-10-06", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Lily Collins — Rotation baseline", createDatetime("2026-10-07", "19:00:00"), createDatetime("2026-10-07", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Renate — Rotation baseline", createDatetime("2026-10-08", "13:00:00"), createDatetime("2026-10-08", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Rebecca — Rotation baseline", createDatetime("2026-10-09", "13:00:00"), createDatetime("2026-10-09", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Gracie Abrams — Rotation baseline", createDatetime("2026-10-10", "13:00:00"), createDatetime("2026-10-10", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Romy Nassar — 30th Birthday", createDatetime("2026-10-11", "13:00:00"), createDatetime("2026-10-11", "13:15:00"), 5, "SOFT HOOK: Romy Nassar 30th birthday (born Oct 11, 1996). Birthday engagement angle.")
-	createEvent(brandComposerCalendar, "[STORY] Zendaya — Rotation baseline", createDatetime("2026-10-14", "19:00:00"), createDatetime("2026-10-14", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Elle — Rotation baseline", createDatetime("2026-10-15", "13:00:00"), createDatetime("2026-10-15", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Anya — Rotation baseline", createDatetime("2026-10-16", "13:00:00"), createDatetime("2026-10-16", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Odessa — Rotation baseline (30-day reset from 9/17)", createDatetime("2026-10-17", "13:00:00"), createDatetime("2026-10-17", "13:15:00"), 8, "30-day rotation baseline. Restarting 30-day cycle from 9/17.")
-	createEvent(brandComposerCalendar, "[STORY] Karlie — Rotation baseline", createDatetime("2026-10-20", "19:00:00"), createDatetime("2026-10-20", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Paula — Rotation baseline (30-day reset from 10/1)", createDatetime("2026-10-21", "19:00:00"), createDatetime("2026-10-21", "19:15:00"), 8, "30-day rotation baseline. Restarting 30-day cycle from 10/1.")
-	createEvent(brandComposerCalendar, "[STORY] Kate Bartlett — Rotation baseline", createDatetime("2026-10-22", "13:00:00"), createDatetime("2026-10-22", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Erin — Rotation baseline", createDatetime("2026-10-23", "13:00:00"), createDatetime("2026-10-23", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Amelie — Rotation baseline", createDatetime("2026-10-24", "13:00:00"), createDatetime("2026-10-24", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Lily Collins — Rotation baseline", createDatetime("2026-10-27", "19:00:00"), createDatetime("2026-10-27", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Renate — Rotation baseline", createDatetime("2026-10-28", "19:00:00"), createDatetime("2026-10-28", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Rebecca — Rotation baseline", createDatetime("2026-10-29", "13:00:00"), createDatetime("2026-10-29", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Gracie Abrams — Rotation baseline", createDatetime("2026-10-30", "13:00:00"), createDatetime("2026-10-30", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Romy — Rotation baseline", createDatetime("2026-10-31", "13:00:00"), createDatetime("2026-10-31", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Paula — Rotation baseline", start date:date "Friday, October 1, 2026 1:00:00 PM", end date:date "Friday, October 1, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Kate Bartlett — Rotation baseline", start date:date "Saturday, October 2, 2026 1:00:00 PM", end date:date "Saturday, October 2, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Erin — Rotation baseline", start date:date "Sunday, October 3, 2026 1:00:00 PM", end date:date "Sunday, October 3, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Amelie — Rotation baseline", start date:date "Wednesday, October 6, 2026 7:00:00 PM", end date:date "Wednesday, October 6, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Lily Collins — Rotation baseline", start date:date "Thursday, October 7, 2026 7:00:00 PM", end date:date "Thursday, October 7, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Renate — Rotation baseline", start date:date "Friday, October 8, 2026 1:00:00 PM", end date:date "Friday, October 8, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Rebecca — Rotation baseline", start date:date "Saturday, October 9, 2026 1:00:00 PM", end date:date "Saturday, October 9, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Gracie Abrams — Rotation baseline", start date:date "Sunday, October 10, 2026 1:00:00 PM", end date:date "Sunday, October 10, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Romy Nassar — 30th Birthday HOOK", start date:date "Monday, October 11, 2026 1:00:00 PM", end date:date "Monday, October 11, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Zendaya — Rotation baseline", start date:date "Thursday, October 14, 2026 7:00:00 PM", end date:date "Thursday, October 14, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Elle — Rotation baseline", start date:date "Friday, October 15, 2026 1:00:00 PM", end date:date "Friday, October 15, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Anya — Rotation baseline", start date:date "Saturday, October 16, 2026 1:00:00 PM", end date:date "Saturday, October 16, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Odessa — Rotation baseline (30-day reset)", start date:date "Sunday, October 17, 2026 1:00:00 PM", end date:date "Sunday, October 17, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Karlie — Rotation baseline", start date:date "Wednesday, October 20, 2026 7:00:00 PM", end date:date "Wednesday, October 20, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Paula — Rotation baseline (30-day reset)", start date:date "Thursday, October 21, 2026 7:00:00 PM", end date:date "Thursday, October 21, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Kate Bartlett — Rotation baseline", start date:date "Friday, October 22, 2026 1:00:00 PM", end date:date "Friday, October 22, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Erin — Rotation baseline", start date:date "Saturday, October 23, 2026 1:00:00 PM", end date:date "Saturday, October 23, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Amelie — Rotation baseline", start date:date "Sunday, October 24, 2026 1:00:00 PM", end date:date "Sunday, October 24, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Lily Collins — Rotation baseline", start date:date "Wednesday, October 27, 2026 7:00:00 PM", end date:date "Wednesday, October 27, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Renate — Rotation baseline", start date:date "Thursday, October 28, 2026 7:00:00 PM", end date:date "Thursday, October 28, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Rebecca — Rotation baseline", start date:date "Friday, October 29, 2026 1:00:00 PM", end date:date "Friday, October 29, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Gracie Abrams — Rotation baseline", start date:date "Saturday, October 30, 2026 1:00:00 PM", end date:date "Saturday, October 30, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Romy — Rotation baseline", start date:date "Sunday, October 31, 2026 1:00:00 PM", end date:date "Sunday, October 31, 2026 1:15:00 PM"}
+	
 	-- NOVEMBER 2026
-	createEvent(brandComposerCalendar, "[STORY] Zendaya — Rotation baseline", createDatetime("2026-11-03", "19:00:00"), createDatetime("2026-11-03", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Elle — Rotation baseline", createDatetime("2026-11-04", "13:00:00"), createDatetime("2026-11-04", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Anya — Rotation baseline", createDatetime("2026-11-05", "13:00:00"), createDatetime("2026-11-05", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Odessa — Rotation baseline", createDatetime("2026-11-06", "13:00:00"), createDatetime("2026-11-06", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Karlie — Rotation baseline", createDatetime("2026-11-09", "19:00:00"), createDatetime("2026-11-09", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Paula — Rotation baseline", createDatetime("2026-11-10", "19:00:00"), createDatetime("2026-11-10", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Kate Bartlett — Rotation baseline", createDatetime("2026-11-11", "13:00:00"), createDatetime("2026-11-11", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Erin — Rotation baseline", createDatetime("2026-11-12", "13:00:00"), createDatetime("2026-11-12", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Amelie — Rotation baseline", createDatetime("2026-11-13", "13:00:00"), createDatetime("2026-11-13", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Lily Collins — Rotation baseline", createDatetime("2026-11-16", "19:00:00"), createDatetime("2026-11-16", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Renate — Rotation baseline", createDatetime("2026-11-17", "19:00:00"), createDatetime("2026-11-17", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Rebecca — Rotation baseline", createDatetime("2026-11-18", "13:00:00"), createDatetime("2026-11-18", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Gracie Abrams — Rotation baseline", createDatetime("2026-11-19", "13:00:00"), createDatetime("2026-11-19", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Elle — The Hunger Games: Sunrise on the Reaping (theatrical release)", createDatetime("2026-11-20", "13:00:00"), createDatetime("2026-11-20", "13:15:00"), 5, "HOOK: The Hunger Games: Sunrise on the Reaping (theatrical release, Nov 20, 2026).")
-	createEvent(brandComposerCalendar, "[STORY] Romy — Rotation baseline", createDatetime("2026-11-23", "19:00:00"), createDatetime("2026-11-23", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Zendaya — Rotation baseline", createDatetime("2026-11-24", "19:00:00"), createDatetime("2026-11-24", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Anya — Rotation baseline", createDatetime("2026-11-25", "13:00:00"), createDatetime("2026-11-25", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Odessa — Rotation baseline", createDatetime("2026-11-26", "13:00:00"), createDatetime("2026-11-26", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Karlie — Rotation baseline", createDatetime("2026-11-27", "13:00:00"), createDatetime("2026-11-27", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Paula — Rotation baseline", createDatetime("2026-11-30", "19:00:00"), createDatetime("2026-11-30", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Zendaya — Rotation baseline", start date:date "Wednesday, November 3, 2026 7:00:00 PM", end date:date "Wednesday, November 3, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Elle — Rotation baseline", start date:date "Thursday, November 4, 2026 1:00:00 PM", end date:date "Thursday, November 4, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Anya — Rotation baseline", start date:date "Friday, November 5, 2026 1:00:00 PM", end date:date "Friday, November 5, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Odessa — Rotation baseline", start date:date "Saturday, November 6, 2026 1:00:00 PM", end date:date "Saturday, November 6, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Karlie — Rotation baseline", start date:date "Tuesday, November 9, 2026 7:00:00 PM", end date:date "Tuesday, November 9, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Paula — Rotation baseline", start date:date "Wednesday, November 10, 2026 7:00:00 PM", end date:date "Wednesday, November 10, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Kate Bartlett — Rotation baseline", start date:date "Thursday, November 11, 2026 1:00:00 PM", end date:date "Thursday, November 11, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Erin — Rotation baseline", start date:date "Friday, November 12, 2026 1:00:00 PM", end date:date "Friday, November 12, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Amelie — Rotation baseline", start date:date "Saturday, November 13, 2026 1:00:00 PM", end date:date "Saturday, November 13, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Lily Collins — Rotation baseline", start date:date "Tuesday, November 16, 2026 7:00:00 PM", end date:date "Tuesday, November 16, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Renate — Rotation baseline", start date:date "Wednesday, November 17, 2026 7:00:00 PM", end date:date "Wednesday, November 17, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Rebecca — Rotation baseline", start date:date "Thursday, November 18, 2026 1:00:00 PM", end date:date "Thursday, November 18, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Gracie Abrams — Rotation baseline", start date:date "Friday, November 19, 2026 1:00:00 PM", end date:date "Friday, November 19, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Elle — Hunger Games: Sunrise on the Reaping HOOK", start date:date "Saturday, November 20, 2026 1:00:00 PM", end date:date "Saturday, November 20, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Romy — Rotation baseline", start date:date "Monday, November 23, 2026 7:00:00 PM", end date:date "Monday, November 23, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Zendaya — Rotation baseline", start date:date "Tuesday, November 24, 2026 7:00:00 PM", end date:date "Tuesday, November 24, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Anya — Rotation baseline", start date:date "Wednesday, November 25, 2026 1:00:00 PM", end date:date "Wednesday, November 25, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Odessa — Rotation baseline", start date:date "Thursday, November 26, 2026 1:00:00 PM", end date:date "Thursday, November 26, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Karlie — Rotation baseline", start date:date "Friday, November 27, 2026 1:00:00 PM", end date:date "Friday, November 27, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Paula — Rotation baseline", start date:date "Monday, November 30, 2026 7:00:00 PM", end date:date "Monday, November 30, 2026 7:15:00 PM"}
+	
 	-- DECEMBER 2026
-	createEvent(brandComposerCalendar, "[STORY] Kate Bartlett — Rotation baseline", createDatetime("2026-12-01", "19:00:00"), createDatetime("2026-12-01", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Gracie Abrams — Gracie Abrams Look at My Life Tour launches (Dec 2-May 28)", createDatetime("2026-12-02", "13:00:00"), createDatetime("2026-12-02", "13:15:00"), 5, "HOOK: Gracie Abrams Look at My Life Tour launches Dec 2, 2026 (64 dates, North America + Europe).")
-	createEvent(brandComposerCalendar, "[STORY] Erin — Rotation baseline", createDatetime("2026-12-03", "13:00:00"), createDatetime("2026-12-03", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Amelie — Rotation baseline", createDatetime("2026-12-04", "13:00:00"), createDatetime("2026-12-04", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Lily Collins — Rotation baseline", createDatetime("2026-12-07", "19:00:00"), createDatetime("2026-12-07", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Renate — Rotation baseline", createDatetime("2026-12-08", "19:00:00"), createDatetime("2026-12-08", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Rebecca — Rotation baseline", createDatetime("2026-12-09", "13:00:00"), createDatetime("2026-12-09", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Romy — Rotation baseline", createDatetime("2026-12-10", "13:00:00"), createDatetime("2026-12-10", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Zendaya — Rotation baseline", createDatetime("2026-12-11", "13:00:00"), createDatetime("2026-12-11", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Anya — Rotation baseline", createDatetime("2026-12-14", "19:00:00"), createDatetime("2026-12-14", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Odessa — Rotation baseline (30-day reset from 10/17)", createDatetime("2026-12-15", "19:00:00"), createDatetime("2026-12-15", "19:15:00"), 8, "30-day rotation baseline. Restarting 30-day cycle.")
-	createEvent(brandComposerCalendar, "[STORY] Elle — Rotation baseline", createDatetime("2026-12-16", "13:00:00"), createDatetime("2026-12-16", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Karlie — Rotation baseline", createDatetime("2026-12-17", "13:00:00"), createDatetime("2026-12-17", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Zendaya — Dune: Part Three (theatrical release)", createDatetime("2026-12-18", "09:00:00"), createDatetime("2026-12-18", "09:15:00"), 5, "HOOK: Dune: Part Three (theatrical release, Dec 18, 2026).")
-	createEvent(brandComposerCalendar, "[STORY] Anya — Dune: Part Three (theatrical release)", createDatetime("2026-12-18", "13:00:00"), createDatetime("2026-12-18", "13:15:00"), 5, "HOOK: Dune: Part Three (theatrical release, Dec 18, 2026).")
-	createEvent(brandComposerCalendar, "[STORY] Rebecca — Dune: Part Three (supporting, ensemble push)", createDatetime("2026-12-18", "19:00:00"), createDatetime("2026-12-18", "19:15:00"), 5, "HOOK: Dune: Part Three (supporting role, ensemble push).")
-	createEvent(brandComposerCalendar, "[STORY] Paula — Rotation baseline", createDatetime("2026-12-19", "19:00:00"), createDatetime("2026-12-19", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Kate Bartlett — Rotation baseline", createDatetime("2026-12-22", "19:00:00"), createDatetime("2026-12-22", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Erin — Rotation baseline", createDatetime("2026-12-23", "13:00:00"), createDatetime("2026-12-23", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Amelie — Rotation baseline", createDatetime("2026-12-24", "13:00:00"), createDatetime("2026-12-24", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Lily Collins — Rotation baseline (tour continues)", createDatetime("2026-12-28", "13:00:00"), createDatetime("2026-12-28", "13:15:00"), 8, "30-day rotation baseline. Tour continues.")
-	createEvent(brandComposerCalendar, "[STORY] Renate — Rotation baseline", createDatetime("2026-12-29", "19:00:00"), createDatetime("2026-12-29", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Gracie Abrams — Rotation baseline (tour continues)", createDatetime("2026-12-30", "13:00:00"), createDatetime("2026-12-30", "13:15:00"), 8, "30-day rotation baseline. Tour continues.")
-	createEvent(brandComposerCalendar, "[STORY] Romy — Rotation baseline", createDatetime("2026-12-31", "13:00:00"), createDatetime("2026-12-31", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Kate Bartlett — Rotation baseline", start date:date "Tuesday, December 1, 2026 7:00:00 PM", end date:date "Tuesday, December 1, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Gracie Abrams — Tour Launch HOOK", start date:date "Wednesday, December 2, 2026 1:00:00 PM", end date:date "Wednesday, December 2, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Erin — Rotation baseline", start date:date "Thursday, December 3, 2026 1:00:00 PM", end date:date "Thursday, December 3, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Amelie — Rotation baseline", start date:date "Friday, December 4, 2026 1:00:00 PM", end date:date "Friday, December 4, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Lily Collins — Rotation baseline", start date:date "Monday, December 7, 2026 7:00:00 PM", end date:date "Monday, December 7, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Renate — Rotation baseline", start date:date "Tuesday, December 8, 2026 7:00:00 PM", end date:date "Tuesday, December 8, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Rebecca — Rotation baseline", start date:date "Wednesday, December 9, 2026 1:00:00 PM", end date:date "Wednesday, December 9, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Romy — Rotation baseline", start date:date "Thursday, December 10, 2026 1:00:00 PM", end date:date "Thursday, December 10, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Zendaya — Rotation baseline", start date:date "Friday, December 11, 2026 1:00:00 PM", end date:date "Friday, December 11, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Anya — Rotation baseline", start date:date "Monday, December 14, 2026 7:00:00 PM", end date:date "Monday, December 14, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Odessa — Rotation baseline (30-day reset)", start date:date "Tuesday, December 15, 2026 7:00:00 PM", end date:date "Tuesday, December 15, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Elle — Rotation baseline", start date:date "Wednesday, December 16, 2026 1:00:00 PM", end date:date "Wednesday, December 16, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Karlie — Rotation baseline", start date:date "Thursday, December 17, 2026 1:00:00 PM", end date:date "Thursday, December 17, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Zendaya — Dune: Part Three HOOK", start date:date "Friday, December 18, 2026 9:00:00 AM", end date:date "Friday, December 18, 2026 9:15:00 AM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Anya — Dune: Part Three HOOK", start date:date "Friday, December 18, 2026 1:00:00 PM", end date:date "Friday, December 18, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Rebecca — Dune: Part Three HOOK", start date:date "Friday, December 18, 2026 7:00:00 PM", end date:date "Friday, December 18, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Paula — Rotation baseline", start date:date "Saturday, December 19, 2026 7:00:00 PM", end date:date "Saturday, December 19, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Kate Bartlett — Rotation baseline", start date:date "Tuesday, December 22, 2026 7:00:00 PM", end date:date "Tuesday, December 22, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Erin — Rotation baseline", start date:date "Wednesday, December 23, 2026 1:00:00 PM", end date:date "Wednesday, December 23, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Amelie — Rotation baseline", start date:date "Thursday, December 24, 2026 1:00:00 PM", end date:date "Thursday, December 24, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Lily Collins — Rotation baseline (tour continues)", start date:date "Monday, December 28, 2026 1:00:00 PM", end date:date "Monday, December 28, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Renate — Rotation baseline", start date:date "Tuesday, December 29, 2026 7:00:00 PM", end date:date "Tuesday, December 29, 2026 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Gracie Abrams — Rotation baseline (tour continues)", start date:date "Wednesday, December 30, 2026 1:00:00 PM", end date:date "Wednesday, December 30, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Romy — Rotation baseline", start date:date "Thursday, December 31, 2026 1:00:00 PM", end date:date "Thursday, December 31, 2026 1:15:00 PM"}
+	
 	-- JANUARY 2027
-	createEvent(brandComposerCalendar, "[STORY] Gracie Abrams — Rotation baseline (tour continues)", createDatetime("2027-01-02", "13:00:00"), createDatetime("2027-01-02", "13:15:00"), 8, "30-day rotation baseline. Tour continues.")
-	createEvent(brandComposerCalendar, "[STORY] Romy — Rotation baseline", createDatetime("2027-01-03", "13:00:00"), createDatetime("2027-01-03", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Zendaya — Rotation baseline", createDatetime("2027-01-04", "13:00:00"), createDatetime("2027-01-04", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Anya — Rotation baseline", createDatetime("2027-01-07", "19:00:00"), createDatetime("2027-01-07", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Odessa — Rotation baseline", createDatetime("2027-01-08", "19:00:00"), createDatetime("2027-01-08", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Elle — Rotation baseline", createDatetime("2027-01-09", "13:00:00"), createDatetime("2027-01-09", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Karlie — Rotation baseline", createDatetime("2027-01-10", "13:00:00"), createDatetime("2027-01-10", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Paula — Rotation baseline", createDatetime("2027-01-11", "13:00:00"), createDatetime("2027-01-11", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Kate Bartlett — Rotation baseline", createDatetime("2027-01-14", "19:00:00"), createDatetime("2027-01-14", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Erin — Rotation baseline", createDatetime("2027-01-15", "19:00:00"), createDatetime("2027-01-15", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Amelie — Rotation baseline", createDatetime("2027-01-16", "13:00:00"), createDatetime("2027-01-16", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Renate — Rotation baseline", createDatetime("2027-01-17", "13:00:00"), createDatetime("2027-01-17", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Rebecca — Rotation baseline", createDatetime("2027-01-18", "19:00:00"), createDatetime("2027-01-18", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Gracie Abrams — Rotation baseline (tour continues)", createDatetime("2027-01-19", "13:00:00"), createDatetime("2027-01-19", "13:15:00"), 8, "30-day rotation baseline. Tour continues.")
-	createEvent(brandComposerCalendar, "[STORY] Romy — Rotation baseline", createDatetime("2027-01-20", "13:00:00"), createDatetime("2027-01-20", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Zendaya — Rotation baseline", createDatetime("2027-01-21", "13:00:00"), createDatetime("2027-01-21", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Anya — Rotation baseline", createDatetime("2027-01-24", "19:00:00"), createDatetime("2027-01-24", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Odessa — Rotation baseline", createDatetime("2027-01-25", "19:00:00"), createDatetime("2027-01-25", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Elle — Rotation baseline", createDatetime("2027-01-26", "13:00:00"), createDatetime("2027-01-26", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Karlie — Rotation baseline", createDatetime("2027-01-27", "13:00:00"), createDatetime("2027-01-27", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Paula — Rotation baseline", createDatetime("2027-01-28", "13:00:00"), createDatetime("2027-01-28", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Kate Bartlett — Rotation baseline", createDatetime("2027-01-31", "13:00:00"), createDatetime("2027-01-31", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Gracie Abrams — Rotation baseline (tour continues)", start date:date "Saturday, January 2, 2027 1:00:00 PM", end date:date "Saturday, January 2, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Romy — Rotation baseline", start date:date "Sunday, January 3, 2027 1:00:00 PM", end date:date "Sunday, January 3, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Zendaya — Rotation baseline", start date:date "Monday, January 4, 2027 1:00:00 PM", end date:date "Monday, January 4, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Anya — Rotation baseline", start date:date "Thursday, January 7, 2027 7:00:00 PM", end date:date "Thursday, January 7, 2027 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Odessa — Rotation baseline", start date:date "Friday, January 8, 2027 7:00:00 PM", end date:date "Friday, January 8, 2027 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Elle — Rotation baseline", start date:date "Saturday, January 9, 2027 1:00:00 PM", end date:date "Saturday, January 9, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Karlie — Rotation baseline", start date:date "Sunday, January 10, 2027 1:00:00 PM", end date:date "Sunday, January 10, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Paula — Rotation baseline", start date:date "Monday, January 11, 2027 1:00:00 PM", end date:date "Monday, January 11, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Kate Bartlett — Rotation baseline", start date:date "Thursday, January 14, 2027 7:00:00 PM", end date:date "Thursday, January 14, 2027 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Erin — Rotation baseline", start date:date "Friday, January 15, 2027 7:00:00 PM", end date:date "Friday, January 15, 2027 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Amelie — Rotation baseline", start date:date "Saturday, January 16, 2027 1:00:00 PM", end date:date "Saturday, January 16, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Renate — Rotation baseline", start date:date "Sunday, January 17, 2027 1:00:00 PM", end date:date "Sunday, January 17, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Rebecca — Rotation baseline", start date:date "Monday, January 18, 2027 7:00:00 PM", end date:date "Monday, January 18, 2027 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Gracie Abrams — Rotation baseline (tour continues)", start date:date "Tuesday, January 19, 2027 1:00:00 PM", end date:date "Tuesday, January 19, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Romy — Rotation baseline", start date:date "Wednesday, January 20, 2027 1:00:00 PM", end date:date "Wednesday, January 20, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Zendaya — Rotation baseline", start date:date "Thursday, January 21, 2027 1:00:00 PM", end date:date "Thursday, January 21, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Anya — Rotation baseline", start date:date "Sunday, January 24, 2027 7:00:00 PM", end date:date "Sunday, January 24, 2027 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Odessa — Rotation baseline", start date:date "Monday, January 25, 2027 7:00:00 PM", end date:date "Monday, January 25, 2027 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Elle — Rotation baseline", start date:date "Tuesday, January 26, 2027 1:00:00 PM", end date:date "Tuesday, January 26, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Karlie — Rotation baseline", start date:date "Wednesday, January 27, 2027 1:00:00 PM", end date:date "Wednesday, January 27, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Paula — Rotation baseline", start date:date "Thursday, January 28, 2027 1:00:00 PM", end date:date "Thursday, January 28, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Kate Bartlett — Rotation baseline", start date:date "Sunday, January 31, 2027 1:00:00 PM", end date:date "Sunday, January 31, 2027 1:15:00 PM"}
+	
 	-- FEBRUARY 2027
-	createEvent(brandComposerCalendar, "[STORY] Erin — Rotation baseline", createDatetime("2027-02-01", "19:00:00"), createDatetime("2027-02-01", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Amelie — Rotation baseline", createDatetime("2027-02-02", "19:00:00"), createDatetime("2027-02-02", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Lily Collins — Rotation baseline", createDatetime("2027-02-03", "13:00:00"), createDatetime("2027-02-03", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Renate — Rotation baseline", createDatetime("2027-02-04", "13:00:00"), createDatetime("2027-02-04", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Rebecca — Rotation baseline", createDatetime("2027-02-07", "19:00:00"), createDatetime("2027-02-07", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Gracie Abrams — Rotation baseline (tour continues)", createDatetime("2027-02-08", "19:00:00"), createDatetime("2027-02-08", "19:15:00"), 8, "30-day rotation baseline. Tour continues.")
-	createEvent(brandComposerCalendar, "[STORY] Romy — Rotation baseline", createDatetime("2027-02-09", "13:00:00"), createDatetime("2027-02-09", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Zendaya — Rotation baseline", createDatetime("2027-02-10", "13:00:00"), createDatetime("2027-02-10", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Anya — Rotation baseline", createDatetime("2027-02-11", "13:00:00"), createDatetime("2027-02-11", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Odessa — Rotation baseline", createDatetime("2027-02-14", "19:00:00"), createDatetime("2027-02-14", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Elle — Rotation baseline", createDatetime("2027-02-15", "19:00:00"), createDatetime("2027-02-15", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Karlie — Rotation baseline", createDatetime("2027-02-16", "13:00:00"), createDatetime("2027-02-16", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Paula — Rotation baseline", createDatetime("2027-02-17", "13:00:00"), createDatetime("2027-02-17", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Kate Bartlett — Rotation baseline", createDatetime("2027-02-18", "13:00:00"), createDatetime("2027-02-18", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Erin — Rotation baseline", createDatetime("2027-02-21", "13:00:00"), createDatetime("2027-02-21", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Amelie — Rotation baseline", createDatetime("2027-02-22", "13:00:00"), createDatetime("2027-02-22", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Renate — Rotation baseline", createDatetime("2027-02-24", "13:00:00"), createDatetime("2027-02-24", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Rebecca — Rotation baseline", createDatetime("2027-02-28", "19:00:00"), createDatetime("2027-02-28", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Erin — Rotation baseline", start date:date "Monday, February 1, 2027 7:00:00 PM", end date:date "Monday, February 1, 2027 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Amelie — Rotation baseline", start date:date "Tuesday, February 2, 2027 7:00:00 PM", end date:date "Tuesday, February 2, 2027 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Lily Collins — Rotation baseline", start date:date "Wednesday, February 3, 2027 1:00:00 PM", end date:date "Wednesday, February 3, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Renate — Rotation baseline", start date:date "Thursday, February 4, 2027 1:00:00 PM", end date:date "Thursday, February 4, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Rebecca — Rotation baseline", start date:date "Sunday, February 7, 2027 7:00:00 PM", end date:date "Sunday, February 7, 2027 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Gracie Abrams — Rotation baseline (tour continues)", start date:date "Monday, February 8, 2027 7:00:00 PM", end date:date "Monday, February 8, 2027 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Romy — Rotation baseline", start date:date "Tuesday, February 9, 2027 1:00:00 PM", end date:date "Tuesday, February 9, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Zendaya — Rotation baseline", start date:date "Wednesday, February 10, 2027 1:00:00 PM", end date:date "Wednesday, February 10, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Anya — Rotation baseline", start date:date "Thursday, February 11, 2027 1:00:00 PM", end date:date "Thursday, February 11, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Odessa — Rotation baseline", start date:date "Sunday, February 14, 2027 7:00:00 PM", end date:date "Sunday, February 14, 2027 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Elle — Rotation baseline", start date:date "Monday, February 15, 2027 7:00:00 PM", end date:date "Monday, February 15, 2027 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Karlie — Rotation baseline", start date:date "Tuesday, February 16, 2027 1:00:00 PM", end date:date "Tuesday, February 16, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Paula — Rotation baseline", start date:date "Wednesday, February 17, 2027 1:00:00 PM", end date:date "Wednesday, February 17, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Kate Bartlett — Rotation baseline", start date:date "Thursday, February 18, 2027 1:00:00 PM", end date:date "Thursday, February 18, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Erin — Rotation baseline", start date:date "Sunday, February 21, 2027 1:00:00 PM", end date:date "Sunday, February 21, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Amelie — Rotation baseline", start date:date "Monday, February 22, 2027 1:00:00 PM", end date:date "Monday, February 22, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Renate — Rotation baseline", start date:date "Wednesday, February 24, 2027 1:00:00 PM", end date:date "Wednesday, February 24, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Rebecca — Rotation baseline", start date:date "Sunday, February 28, 2027 7:00:00 PM", end date:date "Sunday, February 28, 2027 7:15:00 PM"}
+	
 	-- MARCH 2027
-	createEvent(brandComposerCalendar, "[STORY] Gracie Abrams — Rotation baseline (tour continues)", createDatetime("2027-03-02", "13:00:00"), createDatetime("2027-03-02", "13:15:00"), 8, "30-day rotation baseline. Tour continues.")
-	createEvent(brandComposerCalendar, "[STORY] Romy — Rotation baseline", createDatetime("2027-03-03", "13:00:00"), createDatetime("2027-03-03", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Zendaya — Rotation baseline", createDatetime("2027-03-04", "13:00:00"), createDatetime("2027-03-04", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Anya — Rotation baseline", createDatetime("2027-03-07", "19:00:00"), createDatetime("2027-03-07", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Odessa — Rotation baseline", createDatetime("2027-03-08", "19:00:00"), createDatetime("2027-03-08", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Elle — Rotation baseline", createDatetime("2027-03-09", "13:00:00"), createDatetime("2027-03-09", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Karlie — Rotation baseline", createDatetime("2027-03-10", "13:00:00"), createDatetime("2027-03-10", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Paula — Rotation baseline", createDatetime("2027-03-11", "13:00:00"), createDatetime("2027-03-11", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Kate Bartlett — Rotation baseline", createDatetime("2027-03-14", "19:00:00"), createDatetime("2027-03-14", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Erin — Rotation baseline", createDatetime("2027-03-15", "19:00:00"), createDatetime("2027-03-15", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Amelie — Rotation baseline", createDatetime("2027-03-16", "13:00:00"), createDatetime("2027-03-16", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Renate — Rotation baseline", createDatetime("2027-03-17", "13:00:00"), createDatetime("2027-03-17", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Lily Collins — Rotation baseline + Emily in Paris S6 momentum", createDatetime("2027-03-18", "13:00:00"), createDatetime("2027-03-18", "13:15:00"), 5, "SOFT HOOK: Lily Collins 38th birthday + Emily in Paris S6 tie.")
-	createEvent(brandComposerCalendar, "[STORY] Elle — The Nightingale (theatrical release, co-star Dakota)", createDatetime("2027-03-19", "13:00:00"), createDatetime("2027-03-19", "13:15:00"), 5, "HOOK: The Nightingale (theatrical release, March 19, 2027).")
-	createEvent(brandComposerCalendar, "[STORY] Rebecca — Rotation baseline", createDatetime("2027-03-22", "19:00:00"), createDatetime("2027-03-22", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Gracie Abrams — Rotation baseline (tour winding down, ends May 28)", createDatetime("2027-03-23", "13:00:00"), createDatetime("2027-03-23", "13:15:00"), 8, "30-day rotation baseline. Tour winding down.")
-	createEvent(brandComposerCalendar, "[STORY] Romy — Rotation baseline", createDatetime("2027-03-24", "13:00:00"), createDatetime("2027-03-24", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Zendaya — Rotation baseline", createDatetime("2027-03-25", "13:00:00"), createDatetime("2027-03-25", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Anya — Rotation baseline", createDatetime("2027-03-28", "19:00:00"), createDatetime("2027-03-28", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Odessa — Rotation baseline", createDatetime("2027-03-29", "19:00:00"), createDatetime("2027-03-29", "19:15:00"), 8, "30-day rotation baseline. No hook.")
-	createEvent(brandComposerCalendar, "[STORY] Elle — Rotation baseline (30-day reset from 3/19)", createDatetime("2027-03-30", "13:00:00"), createDatetime("2027-03-30", "13:15:00"), 8, "30-day rotation baseline. Restarting 30-day cycle from 3/19.")
-	createEvent(brandComposerCalendar, "[STORY] Karlie — Rotation baseline", createDatetime("2027-03-31", "13:00:00"), createDatetime("2027-03-31", "13:15:00"), 8, "30-day rotation baseline. No hook.")
-
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Gracie Abrams — Rotation baseline (tour continues)", start date:date "Tuesday, March 2, 2027 1:00:00 PM", end date:date "Tuesday, March 2, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Romy — Rotation baseline", start date:date "Wednesday, March 3, 2027 1:00:00 PM", end date:date "Wednesday, March 3, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Zendaya — Rotation baseline", start date:date "Thursday, March 4, 2027 1:00:00 PM", end date:date "Thursday, March 4, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Anya — Rotation baseline", start date:date "Sunday, March 7, 2027 7:00:00 PM", end date:date "Sunday, March 7, 2027 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Odessa — Rotation baseline", start date:date "Monday, March 8, 2027 7:00:00 PM", end date:date "Monday, March 8, 2027 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Elle — Rotation baseline", start date:date "Tuesday, March 9, 2027 1:00:00 PM", end date:date "Tuesday, March 9, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Karlie — Rotation baseline", start date:date "Wednesday, March 10, 2027 1:00:00 PM", end date:date "Wednesday, March 10, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Paula — Rotation baseline", start date:date "Thursday, March 11, 2027 1:00:00 PM", end date:date "Thursday, March 11, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Kate Bartlett — Rotation baseline", start date:date "Sunday, March 14, 2027 7:00:00 PM", end date:date "Sunday, March 14, 2027 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Erin — Rotation baseline", start date:date "Monday, March 15, 2027 7:00:00 PM", end date:date "Monday, March 15, 2027 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Amelie — Rotation baseline", start date:date "Tuesday, March 16, 2027 1:00:00 PM", end date:date "Tuesday, March 16, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Renate — Rotation baseline", start date:date "Wednesday, March 17, 2027 1:00:00 PM", end date:date "Wednesday, March 17, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Lily Collins — 38th Birthday + Emily in Paris HOOK", start date:date "Thursday, March 18, 2027 1:00:00 PM", end date:date "Thursday, March 18, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Elle — The Nightingale HOOK", start date:date "Friday, March 19, 2027 1:00:00 PM", end date:date "Friday, March 19, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Rebecca — Rotation baseline", start date:date "Monday, March 22, 2027 7:00:00 PM", end date:date "Monday, March 22, 2027 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Gracie Abrams — Rotation baseline (tour winding down)", start date:date "Tuesday, March 23, 2027 1:00:00 PM", end date:date "Tuesday, March 23, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Romy — Rotation baseline", start date:date "Wednesday, March 24, 2027 1:00:00 PM", end date:date "Wednesday, March 24, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Zendaya — Rotation baseline", start date:date "Thursday, March 25, 2027 1:00:00 PM", end date:date "Thursday, March 25, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Anya — Rotation baseline", start date:date "Sunday, March 28, 2027 7:00:00 PM", end date:date "Sunday, March 28, 2027 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Odessa — Rotation baseline", start date:date "Monday, March 29, 2027 7:00:00 PM", end date:date "Monday, March 29, 2027 7:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Elle — Rotation baseline (30-day reset)", start date:date "Tuesday, March 30, 2027 1:00:00 PM", end date:date "Tuesday, March 30, 2027 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Karlie — Rotation baseline", start date:date "Wednesday, March 31, 2027 1:00:00 PM", end date:date "Wednesday, March 31, 2027 1:15:00 PM"}
 end tell
 
 display notification "BrandComposer calendar updated successfully with all 180 events!" with title "Calendar Update Complete"
