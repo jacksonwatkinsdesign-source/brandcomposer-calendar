@@ -33,12 +33,14 @@ COUNT_SPREAD = 3
 MAX_PER_DAY = 7
 ALLOWED_TIMES = {"9:00:00 AM", "1:00:00 PM", "7:00:00 PM"}
 
-# Tolerant of the formatting variations AppleScript accepts: optional spaces
-# around colons, and `date "..."` with or without wrapping parentheses.
-EVENT_RE = re.compile(
-    r'summary\s*:\s*"(?P<summary>.*?)"\s*,\s*'
-    r'start\s+date\s*:\s*\(?\s*date\s+"(?P<start>.*?)"'
-)
+# AppleScript can express an event date two ways, and the generator uses both:
+#   inline    ... start date:date "Thursday, September 3, 2026 9:00:00 AM"
+#   by name   set slotDate to date "..."   /   ... start date:slotDate
+# Parsing walks the file in order so reassigned variables resolve correctly.
+SET_DATE_RE = re.compile(r'^\s*set\s+([A-Za-z_]\w*)\s+to\s+date\s+"([^"]+)"')
+SUMMARY_RE = re.compile(r'summary\s*:\s*"([^"]*)"')
+START_INLINE_RE = re.compile(r'start\s+date\s*:\s*\(?\s*date\s+"([^"]+)"')
+START_VAR_RE = re.compile(r'start\s+date\s*:\s*([A-Za-z_]\w*)')
 
 failures, warnings = [], []
 
@@ -81,8 +83,36 @@ def dump_head(reason):
     print("       " + "-" * 60)
 
 events = []
-for m in EVENT_RE.finditer(text):
-    summary, start = m.group("summary"), m.group("start")
+date_vars = {}
+for lineno, line in enumerate(text.splitlines(), 1):
+    assign = SET_DATE_RE.match(line)
+    if assign:
+        date_vars[assign.group(1)] = assign.group(2)
+        continue
+    if "make new event" not in line:
+        continue
+
+    sm = SUMMARY_RE.search(line)
+    if not sm:
+        fail("event has a summary", f"line {lineno}: make new event with no summary")
+        continue
+    summary = sm.group(1)
+
+    inline = START_INLINE_RE.search(line)
+    if inline:
+        start = inline.group(1)
+    else:
+        byname = START_VAR_RE.search(line)
+        if not byname:
+            fail("event has a start date", f"line {lineno}: {summary!r}")
+            continue
+        var = byname.group(1)
+        if var not in date_vars:
+            fail("start date resolves",
+                 f"line {lineno}: {var!r} is used before it is set — {summary!r}")
+            continue
+        start = date_vars[var]
+
     try:
         dt = datetime.datetime.strptime(start, "%A, %B %d, %Y %I:%M:%S %p")
     except ValueError:
