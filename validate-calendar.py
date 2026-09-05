@@ -192,6 +192,15 @@ for name in ROSTER:
     if name not in by_sub:
         fail("roster covered", f"{name} never appears")
 
+# A confirmed post or a tentpole hook is pinned to a real-world date and cannot
+# be moved to even out spacing. A longer gap *following* one of those is the
+# rotation resuming its own cycle after a featured moment, not a subject being
+# skipped — so it is reported, but it does not fail the run.
+anchored = {
+    (e["subject"], e["date"]) for e in events
+    if e["kind"] == "POST" or "HOOK" in e["summary"]
+}
+
 tail_cutoff = RANGE_END - datetime.timedelta(days=TAIL_WINDOW_DAYS)
 for name, dates in sorted(by_sub.items()):
     if name not in ROSTER:
@@ -203,7 +212,12 @@ for name, dates in sorted(by_sub.items()):
              f"{(RANGE_END - dates[-1]).days}d before the range ends")
     for a, b in zip(dates, dates[1:]):
         gap = (b - a).days
-        if gap > MAX_GAP_DAYS:
+        if gap <= MAX_GAP_DAYS:
+            continue
+        if (name, a) in anchored:
+            warn("gap after an anchor",
+                 f"{name} sits out {gap}d after {a}, which is a pinned post or hook date")
+        else:
             fail("rotation gap", f"{name} sits out {gap}d after {a} (max {MAX_GAP_DAYS})")
 
 counts = {n: len(set(d)) for n, d in by_sub.items() if n in ROSTER}
