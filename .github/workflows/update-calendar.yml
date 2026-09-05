@@ -1,0 +1,36 @@
+name: Update BrandComposer Calendar
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+
+jobs:
+  update-calendar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate calendar script with Claude
+        env:
+          CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+        run: |
+          RESPONSE=$(curl -s https://api.anthropic.com/v1/messages \
+            -H "x-api-key: $CLAUDE_API_KEY" \
+            -H "anthropic-version: 2023-06-01" \
+            -H "content-type: application/json" \
+            -d '{
+              "model": "claude-opus-4-1",
+              "max_tokens": 8000,
+              "messages": [{
+                "role": "user",
+                "content": "Generate a complete AppleScript that creates 180 calendar events in BrandComposer calendar for September 2026 - March 2027. Include: 25 subjects (Karlie, Núria, Paula, Kate Bartlett, Erin, Amelie, Lily Collins, Renate, Rebecca, Gracie Abrams, Zendaya, Romy, Elle, Anya, Odessa) rotating every 30 days. Hooks: Odessa II Sept 10, Olivia II Sept 24, Romy Oct 11, Hunger Games Nov 20, Gracie Dec 2, Dune Dec 18, Lily March 18, Nightingale March 19. Times: 9am, 1pm, 7pm. Output ONLY the AppleScript code."
+              }]
+            }')
+          SCRIPT=$(echo "$RESPONSE" | jq -r '.content[0].text')
+          echo "$SCRIPT" > update-calendar.scpt
+      - name: Commit and push
+        run: |
+          git config user.name "BrandComposer Bot"
+          git config user.email "calendar@brandcomposer.local"
+          git add update-calendar.scpt
+          git diff --cached --quiet || (git commit -m "Auto-update calendar" && git push)
