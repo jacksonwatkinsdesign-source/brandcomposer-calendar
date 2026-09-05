@@ -1,0 +1,9 @@
+# SSH keys — never commit these
+github_key
+github_key.pub
+*.pem
+
+# Generated intermediates
+update-calendar.candidate.scpt
+
+.DS_Store

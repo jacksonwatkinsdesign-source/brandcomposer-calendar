@@ -7,17 +7,31 @@
 
 	<key>ProgramArguments</key>
 	<array>
-		<string>/usr/bin/osascript</string>
-	<string>/Users/jackson/brandcomposer-calendar/update-calendar.scpt</string>
+		<string>/bin/bash</string>
+		<string>/Users/jackwatkins/brandcomposer-calendar/deploy-calendar.sh</string>
 	</array>
 
-	<key>StartInterval</key>
-	<integer>3600</integer>
+	<!-- Sunday 08:00 local. The GitHub Action runs Sunday 00:00 UTC, so the
+	     regenerated script is already pushed by the time this fires. -->
+	<key>StartCalendarInterval</key>
+	<dict>
+		<key>Weekday</key>
+		<integer>0</integer>
+		<key>Hour</key>
+		<integer>8</integer>
+		<key>Minute</key>
+		<integer>0</integer>
+	</dict>
 
+	<!-- Run on wake/login if the scheduled time was missed. -->
+	<key>RunAtLoad</key>
+	<false/>
+
+	<!-- A LaunchAgent runs as the user and cannot write to /var/log. -->
 	<key>StandardOutPath</key>
-	<string>/var/log/brandcomposer-calendar.log</string>
+	<string>/Users/jackwatkins/Library/Logs/brandcomposer-calendar.log</string>
 
 	<key>StandardErrorPath</key>
-	<string>/var/log/brandcomposer-calendar-error.log</string>
+	<string>/Users/jackwatkins/Library/Logs/brandcomposer-calendar.error.log</string>
 </dict>
 </plist>

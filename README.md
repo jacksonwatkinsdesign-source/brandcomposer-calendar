@@ -4,8 +4,10 @@ Automated 6-month illustration posting calendar (Sept 2026 - March 2027) that sy
 
 ## Files in this repo
 
-- **update-calendar.scpt** — AppleScript that creates all 180 calendar events in the BrandComposer calendar
-- **com.brandcomposer.calendar.plist** — launchd configuration for Mac automation
+- **update-calendar.scpt** — AppleScript that rebuilds the BrandComposer calendar's story slots (clears its date range first, so re-running is safe)
+- **com.brandcomposer.calendar.plist** — launchd agent; runs the deploy script Sundays at 08:00
+- **deploy-calendar.sh** — pulls the latest script, validates it, applies it to Calendar
+- **validate-calendar.py** — enforces the rotation rules; the workflow will not commit a script that fails it
 - **README.md** — This file
 
 ## Workflow
@@ -68,7 +70,7 @@ Run the script manually to verify it works:
 osascript /path/to/update-calendar.scpt
 ```
 
-You should see a notification: **"BrandComposer calendar updated successfully with all 180 events!"**
+You should see a notification reporting how many events were created.
 
 Verify in Apple Calendar that all events appear in the **BrandComposer** calendar (pink).
 
@@ -115,7 +117,7 @@ Check Apple Calendar (Calendar app) to confirm:
 
 The update-calendar.scpt creates:
 
-- **180 calendar events** (Sept 2026 - March 2027)
+- **Story slots** for the 16-subject roster (Sept 2026 - March 2027). The count is whatever the rotation rules produce; it is not a fixed target.
 - **Two colors:**
   - **Green (hook events):** Tours, premieres, birthdays — major engagement moments
   - **Graphite (baseline rotation):** Standard 30-day no-repeat rotation subjects
@@ -196,15 +198,17 @@ launchctl load ~/Library/LaunchAgents/com.brandcomposer.calendar.plist
 
 The calendar structure follows these rules:
 - **Hook placements:** Locked to confirmed cultural moments (tours, premieres, birthdays)
-- **Debut placements:** Olivia II (Sept 24), Odessa II (Sept 10) — both Stranger Things momentum tie-ins
-- **Baseline rotation:** 14 subjects cycle every 30 days (no repeats within 30 days)
+- **Confirmed posts:** Odessa II (Sept 10), Olivia II (Sept 24) — finished, unpublished art with committed dates. These are the only grid posts the generator may schedule; they are declared in `CONFIRMED POSTS` in the workflow. Roman numerals identify which portrait, not a different person.
+- **Baseline rotation:** all 16 roster subjects cycle every 30 days (no repeats within 30 days, no gap over 32 days, no subject dropped)
 - **Soft hooks:** Romy Oct 11 (30th birthday), Lily March 18 (38th birthday + Emily in Paris S6)
 - **Extended windows:** Gracie Abrams tour (Dec 2 - May 28), Olivia Rodrigo tour (Sept 25 - May 10) support multi-week engagement angles
 
-All 25 subjects + 2 unpublished debuts appear in the 6-month calendar.
+All 16 roster subjects appear across the full 6-month range: Karlie, Núria, Paula, Kate Bartlett, Erin, Amelie, Lily Collins, Renate, Rebecca, Gracie Abrams, Zendaya, Romy, Elle, Anya, Odessa, Olivia.
+
+Every generated script is checked by `validate-calendar.py` before it is committed. A run that drops a subject, opens a gap over 32 days, invents a post, or mislabels a weekday fails and the previous script is kept.
 
 ---
 
 Generated: September 2026  
-Calendar covers: Sept 2026 - March 2027 (180 events)  
+Calendar covers: Sept 2026 - March 2027  
 Sync method: Apple EventKit → BrandComposer calendar → iCloud → All devices
