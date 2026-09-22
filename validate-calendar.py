@@ -7,6 +7,7 @@ workflow keeps the last known-good script instead of committing over it.
 """
 import re
 import sys
+import pathlib
 import datetime
 from collections import defaultdict
 
@@ -15,21 +16,44 @@ SCRIPT = sys.argv[1] if len(sys.argv) > 1 else "update-calendar.scpt"
 RANGE_START = datetime.date(2026, 9, 3)
 RANGE_END = datetime.date(2027, 3, 31)
 
-ROSTER = [
-    "Karlie", "Núria", "Paula", "Kate Bartlett", "Erin", "Amelie",
-    "Lily Collins", "Renate", "Rebecca", "Gracie Abrams", "Zendaya",
-    "Romy", "Elle", "Anya", "Odessa", "Olivia",
-]
+# The roster and the confirmed posts are defined once, in build-calendar.py, and
+# read from there. Keeping a second copy here is how a subject gets added in one
+# place, missed in the other, and silently dropped from the calendar.
+# Only the definitions above the generator's build step are executed, so
+# importing them never writes a file.
+def _from_generator():
+    src = (pathlib.Path(__file__).parent / "build-calendar.py").read_text(encoding="utf-8")
+    head = src.split("events = []")[0]
+    ns = {}
+    exec(compile(head, "build-calendar.py", "exec"), ns)
+    return ns["ROSTER"], {(who, d) for who, d, _ in ns["POSTS"]}
 
-# Posts the generator is allowed to schedule: art exists and the date is committed.
-CONFIRMED_POSTS = {
-    ("Odessa", datetime.date(2026, 9, 10)),
-    ("Olivia", datetime.date(2026, 9, 24)),
-}
+
+try:
+    ROSTER, CONFIRMED_POSTS = _from_generator()
+except Exception as e:
+    print(f"FATAL  cannot read the roster from build-calendar.py: {e}")
+    sys.exit(2)
 
 MAX_GAP_DAYS = 32
 TAIL_WINDOW_DAYS = 60
-COUNT_SPREAD = 3
+# The point of the rotation is that a viewer never feels they have seen this
+# before. MIN_REPEAT_DAYS is that rule: a subject may not come round again
+# sooner than this. MAX_SILENT_DAYS is its other half — post often enough that
+# the feed reads as active. Even slot counts are not a goal; a subject running
+# thinner than another costs a viewer nothing, so the spread is reported only.
+# Spacing is not a fixed number of days. One story a weekday means the queue
+# takes as many working days to come round as there are subjects, so the cycle
+# is whatever the inventory supports and widens every time a subject is added.
+# The checker therefore derives the expectation instead of hardcoding it: the
+# old "30 days" was simply what 31 pieces supported in 2026 and would go stale.
+#   expected cycle  = roster size x 7/5  (working days -> calendar days)
+# MIN_REPEAT_DAYS is the separate hard floor: closer than this and a viewer may
+# genuinely notice a repeat, whatever the roster size.
+MIN_REPEAT_DAYS = 21
+CYCLE_SHORTFALL = 4  # days below the achievable cycle before it is reported
+MAX_SILENT_DAYS = 3
+COUNT_SPREAD = 4
 MAX_PER_DAY = 7
 ALLOWED_TIMES = {"9:00:00 AM", "1:00:00 PM", "7:00:00 PM"}
 
@@ -201,6 +225,7 @@ anchored = {
     if e["kind"] == "POST" or "HOOK" in e["summary"]
 }
 
+observed_gaps = []
 tail_cutoff = RANGE_END - datetime.timedelta(days=TAIL_WINDOW_DAYS)
 for name, dates in sorted(by_sub.items()):
     if name not in ROSTER:
@@ -212,13 +237,33 @@ for name, dates in sorted(by_sub.items()):
              f"{(RANGE_END - dates[-1]).days}d before the range ends")
     for a, b in zip(dates, dates[1:]):
         gap = (b - a).days
-        if gap <= MAX_GAP_DAYS:
-            continue
-        if (name, a) in anchored:
-            warn("gap after an anchor",
-                 f"{name} sits out {gap}d after {a}, which is a pinned post or hook date")
+        if gap < MIN_REPEAT_DAYS:
+            if (name, a) in anchored or (name, b) in anchored:
+                warn("close repeat at an anchor",
+                     f"{name} runs again {gap}d after {a} — pinned to a post or hook date. "
+                     "Use a different image so nobody sees the same one twice")
+            else:
+                fail("too soon", f"{name} runs again only {gap}d after {a} "
+                                 f"(nothing may come round inside {MIN_REPEAT_DAYS}d)")
+        elif gap > MAX_GAP_DAYS:
+            if (name, a) in anchored:
+                warn("gap after an anchor",
+                     f"{name} sits out {gap}d after {a}, which is a pinned post or hook date")
+            else:
+                warn("long gap", f"{name} sits out {gap}d after {a} — inventory sitting idle")
         else:
-            fail("rotation gap", f"{name} sits out {gap}d after {a} (max {MAX_GAP_DAYS})")
+            observed_gaps.append((gap, name, a))
+
+if observed_gaps:
+    expected = round(len(ROSTER) * 7 / 5)
+    tightest, name, a = min(observed_gaps)
+    widest = max(observed_gaps)[0]
+    print(f"Repeat spacing: {tightest}-{widest}d. A roster of {len(ROSTER)} posting "
+          f"five days a week supports about {expected}d.")
+    if tightest < expected - CYCLE_SHORTFALL:
+        warn("tighter than the roster allows",
+             f"{name} repeats after {tightest}d when {expected}d is achievable — "
+             "the rotation is doubling back early")
 
 counts = {n: len(set(d)) for n, d in by_sub.items() if n in ROSTER}
 if counts:
@@ -226,9 +271,16 @@ if counts:
     if hi - lo > COUNT_SPREAD:
         thin = [n for n, c in counts.items() if c == lo]
         fat = [n for n, c in counts.items() if c == hi]
-        fail("even cadence",
-             f"slot counts span {lo}–{hi} (max spread {COUNT_SPREAD}); "
-             f"thinnest {', '.join(thin)} / heaviest {', '.join(fat)}")
+        warn("uneven slot counts",
+             f"slot counts span {lo}–{hi}; thinnest {', '.join(thin)} / "
+             f"heaviest {', '.join(fat)}. Not a failure — spacing is what matters")
+
+# --- the feed stays active --------------------------------------------------
+active_days = sorted({e["date"] for e in events})
+for a, b in zip(active_days, active_days[1:]):
+    silent = (b - a).days - 1
+    if silent > MAX_SILENT_DAYS:
+        fail("consistency", f"{silent} days with nothing posted, {a} to {b}")
 
 if "180" in text:
     warn("stale count", "the string '180' still appears — likely a leftover claim")
