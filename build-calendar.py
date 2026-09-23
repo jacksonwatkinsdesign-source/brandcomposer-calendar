@@ -57,7 +57,9 @@ POSTS = [("Odessa", datetime.date(2026,10,20), "Debut carousel, Stranger Things 
          ("Katrin", datetime.date(2026,10,8),  "Debut carousel, rotation placement (no dated hook)",
           "Jackson, chat 2026-09-23: a post to add to the schedule for debut", 2),
          ("Emma",   datetime.date(2026,10,15), "Debut, single image, rotation placement (no dated hook)",
-          "Jackson, chat 2026-09-23: an Emma Chamberlain image I can debut", 1)]
+          "Jackson, chat 2026-09-23: an Emma Chamberlain image I can debut", 1),
+         ("Olivia", datetime.date(2026,10,6),  "Olivia II debut carousel, Australian tour leg opens Oct 5",
+          "Jackson, chat 2026-09-23: has an Olivia II never posted, checked the grid and it is not there", 2)]
 
 for _who, _d, _why, _confirmed, _slides in POSTS:
     if not _confirmed.strip():
@@ -109,21 +111,25 @@ DEBUTS = {who: d for who, d, *_ in POSTS if who in UNPUBLISHED}
 BLACKOUT = {who: d + datetime.timedelta(days=MIN_REPEAT_DAYS) for who, d, _why in POSTED}
 
 
-# A debut is a post of its own, so the rotation must not story that subject
-# again for the same MIN_REPEAT_DAYS afterwards.
+# A debut is a post of its own. The subject stays out of the rotation for
+# MIN_REPEAT_DAYS on BOTH sides of it: nobody should see that person just before
+# the new piece lands, or just after. Same window as any other repeat.
+DEBUT_DATES = {}
 for _who, _d, *_rest in POSTS:
-    BLACKOUT[_who] = max(BLACKOUT.get(_who, _d), _d + datetime.timedelta(days=MIN_REPEAT_DAYS))
+    DEBUT_DATES.setdefault(_who, []).append(_d)
+
+QUIET = datetime.timedelta(days=MIN_REPEAT_DAYS)
 
 
 def eligible(who, day):
+    """Can this subject take a rotation slot on this day?"""
     if who in DEBUTS and day < DEBUTS[who]:
-        return False
+        return False                                   # nothing published yet
     if who in BLACKOUT and day < BLACKOUT[who]:
-        for _w, _pd, *_r in POSTS:
-            if _w == who and day > _pd:
-                return False
-        if who in {w for w, _dd, _why in POSTED}:
-            return False
+        return False                                   # too soon after a real post
+    for pd in DEBUT_DATES.get(who, []):
+        if pd - QUIET < day < pd + QUIET:
+            return False                               # quiet window around a debut
     return True
 i = t = 0
 d = START
