@@ -26,6 +26,14 @@ ROSTER =["Emma","Karlie","Núria","Paula","Kate Bartlett","Erin","Amelie","Lily 
 
 START, END = datetime.date(2026,9,3), datetime.date(2027,3,31)
 
+# What Jackson ACTUALLY posted, when it differs from this schedule. The calendar
+# cannot see Instagram, so a piece he posts off-plan would otherwise come round
+# again too soon. A subject listed here is held out of the rotation until
+# MIN_REPEAT_DAYS have passed, exactly as if the schedule had run it that day.
+# Add a line whenever he says he posted something; nothing else needs changing.
+POSTED = [("Odessa", datetime.date(2026,9,22), "Jackson, chat 2026-09-23: posted Odessa yesterday")]
+MIN_REPEAT_DAYS = 21
+
 # Finished art, with a date, that JACKSON HAS SAID EXISTS. Each becomes a 9am
 # post plus two story frames, per the carousel rule.
 #
@@ -40,8 +48,8 @@ START, END = datetime.date(2026,9,3), datetime.date(2027,3,31)
 # Instagram may re-serve slide two as a second first impression, which is the
 # best-evidenced mechanic in the strategy. A single image forfeits that, so it is
 # only ever used when Jackson says the piece is one image.
-POSTS = [("Odessa", datetime.date(2026,9,29), "Debut carousel, Stranger Things S2 momentum",
-          "Jackson, chat 2026-09-23: confirmed the Odessa II art is finished", 2),
+POSTS = [("Odessa", datetime.date(2026,10,20), "Debut carousel, Stranger Things S2 momentum",
+          "Jackson, chat 2026-09-23: confirmed the Odessa II art is finished; moved off Sept 29 because he posted Odessa Sept 22", 2),
          ("Elle",   datetime.date(2026,11,19), "Elle II debut carousel, Hunger Games eve",
           "Jackson, chat 2026-09-22: new Elle illustration, approved Nov 19 debut", 2),
          ("Syd",    datetime.date(2026,10,1),  "Debut carousel, rotation placement (no dated hook)",
@@ -97,6 +105,26 @@ TIMES = [13, 13, 19]
 # the queue just reaches them later.
 UNPUBLISHED = {"Syd", "Katrin", "Emma"}
 DEBUTS = {who: d for who, d, *_ in POSTS if who in UNPUBLISHED}
+# A subject is also ineligible while an off-schedule post of theirs is still recent.
+BLACKOUT = {who: d + datetime.timedelta(days=MIN_REPEAT_DAYS) for who, d, _why in POSTED}
+
+
+# A debut is a post of its own, so the rotation must not story that subject
+# again for the same MIN_REPEAT_DAYS afterwards.
+for _who, _d, *_rest in POSTS:
+    BLACKOUT[_who] = max(BLACKOUT.get(_who, _d), _d + datetime.timedelta(days=MIN_REPEAT_DAYS))
+
+
+def eligible(who, day):
+    if who in DEBUTS and day < DEBUTS[who]:
+        return False
+    if who in BLACKOUT and day < BLACKOUT[who]:
+        for _w, _pd, *_r in POSTS:
+            if _w == who and day > _pd:
+                return False
+        if who in {w for w, _dd, _why in POSTED}:
+            return False
+    return True
 i = t = 0
 d = START
 while d <= END:
@@ -104,7 +132,7 @@ while d <= END:
         for _ in range(len(ROSTER)):
             who = ROSTER[i % len(ROSTER)]
             i += 1
-            if who not in DEBUTS or d >= DEBUTS[who]:
+            if eligible(who, d):
                 events.append((d, TIMES[t % 3], f"[STORY] {who} — Rotation baseline"))
                 t += 1
                 break
