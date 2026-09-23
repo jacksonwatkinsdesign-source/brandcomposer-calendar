@@ -26,7 +26,7 @@ def _from_generator():
     head = src.split("events = []")[0]
     ns = {}
     exec(compile(head, "build-calendar.py", "exec"), ns)
-    return ns["ROSTER"], {(who, d) for who, d, *_ in ns["POSTS"]}
+    return ns["ROSTER"], {(who, d): e[4] for e in ns["POSTS"] for who, d in [(e[0], e[1])]}
 
 
 try:
@@ -182,22 +182,27 @@ for e in events:
 
 # --- posts ------------------------------------------------------------------
 for e in events:
-    if e["kind"] == "POST" and (e["subject"], e["date"]) not in CONFIRMED_POSTS:
+    if e["kind"] == "POST" and (e["subject"], e["date"]) not in set(CONFIRMED_POSTS):
         fail("posts are confirmed",
              f"invented post: {e['subject']} on {e['date']} — art is not committed")
 
 scheduled_posts = {(e["subject"], e["date"]) for e in events if e["kind"] == "POST"}
-for subject, date in CONFIRMED_POSTS - scheduled_posts:
+for subject, date in set(CONFIRMED_POSTS) - scheduled_posts:
     fail("confirmed posts kept",
          f"{subject} {date} is confirmed art but was dropped from this run")
 
-for subject, date in CONFIRMED_POSTS & scheduled_posts:
+for subject, date in set(CONFIRMED_POSTS) & scheduled_posts:
     frames = [e for e in events if e["subject"] == subject and e["date"] == date
               and e["kind"] == "STORY"]
-    if len(frames) < 2:
-        fail("carousel story frames",
-             f"{subject} {date} has {len(frames)} story frame(s); "
-             "every post is a carousel and each slide runs as its own frame")
+    expected = CONFIRMED_POSTS[(subject, date)]
+    if len(frames) != expected:
+        fail("story frame per slide",
+             f"{subject} {date} has {len(frames)} story frame(s) for {expected} image(s); "
+             "each image runs as its own native frame on post day")
+    if expected < 2:
+        warn("single image, no second chance",
+             f"{subject} {date} is one image, so Instagram cannot re-serve a slide two. "
+             "Its reach is not comparable with the carousels")
 
 # --- per-day load -----------------------------------------------------------
 per_day = defaultdict(int)

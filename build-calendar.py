@@ -18,9 +18,9 @@ OUTPUT = sys.argv[1] if len(sys.argv) > 1 else "update-calendar.scpt"
 # One entry per PERSON. Where a first name could mean more than one public
 # figure, the surname is recorded here: "Olivia" is Olivia DEAN (two published
 # portraits, both already debuted) and is not Olivia Rodrigo. "Katrin" is
-# @katrinkatjuscha, a Berlin streamer and model. A hook researched
+# @katrinkatjuscha, a Berlin streamer and model. "Emma" is Emma Chamberlain. A hook researched
 # for the wrong person is how a post for art that does not exist gets a date.
-ROSTER =["Karlie","Núria","Paula","Kate Bartlett","Erin","Amelie","Lily Collins",
+ROSTER =["Emma","Karlie","Núria","Paula","Kate Bartlett","Erin","Amelie","Lily Collins",
           "Renate","Rebecca","Gracie Abrams","Zendaya","Romy","Elle","Anya",
           "Odessa","Olivia","Faith Ordway","Syd","Katrin"]
 
@@ -36,16 +36,22 @@ START, END = datetime.date(2026,9,3), datetime.date(2027,3,31)
 # suggest making something; it is never evidence that something was made.
 # Anything unconfirmed belongs in a recommendation to him, not on the calendar.
 # The build refuses to run if an entry has an empty confirmation.
+# Fifth field: how many images the piece actually has. Two or more is the norm —
+# Instagram may re-serve slide two as a second first impression, which is the
+# best-evidenced mechanic in the strategy. A single image forfeits that, so it is
+# only ever used when Jackson says the piece is one image.
 POSTS = [("Odessa", datetime.date(2026,9,29), "Debut carousel, Stranger Things S2 momentum",
-          "Jackson, chat 2026-09-23: confirmed the Odessa II art is finished"),
+          "Jackson, chat 2026-09-23: confirmed the Odessa II art is finished", 2),
          ("Elle",   datetime.date(2026,11,19), "Elle II debut carousel, Hunger Games eve",
-          "Jackson, chat 2026-09-22: new Elle illustration, approved Nov 19 debut"),
+          "Jackson, chat 2026-09-22: new Elle illustration, approved Nov 19 debut", 2),
          ("Syd",    datetime.date(2026,10,1),  "Debut carousel, rotation placement (no dated hook)",
-          "Jackson, chat 2026-09-22: another one we can debut at some point"),
+          "Jackson, chat 2026-09-22: another one we can debut at some point", 2),
          ("Katrin", datetime.date(2026,10,8),  "Debut carousel, rotation placement (no dated hook)",
-          "Jackson, chat 2026-09-23: a post to add to the schedule for debut")]
+          "Jackson, chat 2026-09-23: a post to add to the schedule for debut", 2),
+         ("Emma",   datetime.date(2026,10,15), "Debut, single image, rotation placement (no dated hook)",
+          "Jackson, chat 2026-09-23: an Emma Chamberlain image I can debut", 1)]
 
-for _who, _d, _why, _confirmed in POSTS:
+for _who, _d, _why, _confirmed, _slides in POSTS:
     if not _confirmed.strip():
         raise SystemExit(f"REFUSED: {_who} {_d} has no confirmation from Jackson that the art "
                          f"exists. A post may not be scheduled on an assumption.")
@@ -64,11 +70,13 @@ HOOKS = [("Romy",          datetime.date(2026,10,11), "30th birthday HOOK", 13),
 events = []            # (date, hour, summary)
 anchor_days = set()
 
-for who, d, why, _confirmed in POSTS:
+for who, d, why, _confirmed, slides in POSTS:
     anchor_days.add(d)
-    events.append((d, 9,  f"[POST] {who} — {why}"))
-    events.append((d, 13, f"[STORY] {who} — Carousel slide 1"))
-    events.append((d, 19, f"[STORY] {who} — Carousel slide 2"))
+    events.append((d, 9, f"[POST] {who} — {why}"))
+    # Every image runs as its own native story frame on post day, spaced apart.
+    for n, hour in zip(range(1, slides + 1), (13, 19, 21)):
+        label = f"Slide {n}" if slides > 1 else "The image"
+        events.append((d, hour, f"[STORY] {who} — {label}"))
 
 for who, d, why, hr in HOOKS:
     anchor_days.add(d)
@@ -87,7 +95,7 @@ TIMES = [13, 13, 19]
 # Olivia II are second portraits of subjects who already have published work).
 # Remove a name once its debut has run. Skipping does not lose anyone's turn;
 # the queue just reaches them later.
-UNPUBLISHED = {"Syd", "Katrin"}
+UNPUBLISHED = {"Syd", "Katrin", "Emma"}
 DEBUTS = {who: d for who, d, *_ in POSTS if who in UNPUBLISHED}
 i = t = 0
 d = START
