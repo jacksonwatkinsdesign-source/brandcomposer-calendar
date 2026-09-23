@@ -18,9 +18,10 @@ OUTPUT = sys.argv[1] if len(sys.argv) > 1 else "update-calendar.scpt"
 # One entry per PERSON. Where a first name could mean more than one public
 # figure, the surname is recorded here: "Olivia" is Olivia DEAN (two published
 # portraits, both already debuted) and is not Olivia Rodrigo. "Katrin" is
-# @katrinkatjuscha, a Berlin streamer and model. "Emma" is Emma Chamberlain. A hook researched
+# @katrinkatjuscha, a Berlin streamer and model. "Emma" is Emma Chamberlain. "Grace" is a separate
+# person from "Gracie" (Gracie Abrams) — both are published, both rotate. A hook researched
 # for the wrong person is how a post for art that does not exist gets a date.
-ROSTER =["Emma","Karlie","Núria","Paula","Kate Bartlett","Erin","Amelie","Lily Collins",
+ROSTER =["Emma","Grace","Karlie","Núria","Paula","Kate Bartlett","Erin","Amelie","Lily Collins",
           "Renate","Rebecca","Gracie Abrams","Zendaya","Romy","Elle","Anya",
           "Odessa","Olivia","Faith Ordway","Syd","Katrin"]
 
