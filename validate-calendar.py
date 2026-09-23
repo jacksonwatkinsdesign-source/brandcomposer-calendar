@@ -26,7 +26,7 @@ def _from_generator():
     head = src.split("events = []")[0]
     ns = {}
     exec(compile(head, "build-calendar.py", "exec"), ns)
-    return ns["ROSTER"], {(who, d) for who, d, _ in ns["POSTS"]}
+    return ns["ROSTER"], {(who, d) for who, d, *_ in ns["POSTS"]}
 
 
 try:

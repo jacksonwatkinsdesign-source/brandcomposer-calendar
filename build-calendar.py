@@ -15,18 +15,40 @@ import sys
 
 OUTPUT = sys.argv[1] if len(sys.argv) > 1 else "update-calendar.scpt"
 
+# One entry per PERSON. Where a first name could mean more than one public
+# figure, the surname is recorded here: "Olivia" is Olivia DEAN (two published
+# portraits, both already debuted) and is not Olivia Rodrigo. "Katrin" is
+# @katrinkatjuscha, a Berlin streamer and model. A hook researched
+# for the wrong person is how a post for art that does not exist gets a date.
 ROSTER =["Karlie","Núria","Paula","Kate Bartlett","Erin","Amelie","Lily Collins",
           "Renate","Rebecca","Gracie Abrams","Zendaya","Romy","Elle","Anya",
-          "Odessa","Olivia","Faith Ordway","Syd"]
+          "Odessa","Olivia","Faith Ordway","Syd","Katrin"]
 
 START, END = datetime.date(2026,9,3), datetime.date(2027,3,31)
 
-# Finished, unpublished art with a committed date. Each becomes a 9am post plus
-# two story frames, per the carousel rule.
-POSTS = [("Odessa", datetime.date(2026,9,29), "Debut carousel, Stranger Things S2 momentum"),
-         ("Olivia", datetime.date(2026,9,24), "Debut carousel, Rodrigo Unraveled Tour launch"),
-         ("Elle",   datetime.date(2026,11,19), "Elle II debut carousel, Hunger Games eve"),
-         ("Syd",    datetime.date(2026,10,1),  "Debut carousel, rotation placement (no dated hook)")]
+# Finished art, with a date, that JACKSON HAS SAID EXISTS. Each becomes a 9am
+# post plus two story frames, per the carousel rule.
+#
+# THE RULE: a post goes on this list only when Jackson has said, in his own
+# words, that the artwork is finished. The fourth field records where he said
+# it. No confirmation, no entry — not a recommendation, not a hook that would
+# suit, not "he will probably have it done by then". A hook is a reason to
+# suggest making something; it is never evidence that something was made.
+# Anything unconfirmed belongs in a recommendation to him, not on the calendar.
+# The build refuses to run if an entry has an empty confirmation.
+POSTS = [("Odessa", datetime.date(2026,9,29), "Debut carousel, Stranger Things S2 momentum",
+          "Jackson, chat 2026-09-23: confirmed the Odessa II art is finished"),
+         ("Elle",   datetime.date(2026,11,19), "Elle II debut carousel, Hunger Games eve",
+          "Jackson, chat 2026-09-22: new Elle illustration, approved Nov 19 debut"),
+         ("Syd",    datetime.date(2026,10,1),  "Debut carousel, rotation placement (no dated hook)",
+          "Jackson, chat 2026-09-22: another one we can debut at some point"),
+         ("Katrin", datetime.date(2026,10,8),  "Debut carousel, rotation placement (no dated hook)",
+          "Jackson, chat 2026-09-23: a post to add to the schedule for debut")]
+
+for _who, _d, _why, _confirmed in POSTS:
+    if not _confirmed.strip():
+        raise SystemExit(f"REFUSED: {_who} {_d} has no confirmation from Jackson that the art "
+                         f"exists. A post may not be scheduled on an assumption.")
 
 # Real-world dated moments. (subject, date, label, hour)
 HOOKS = [("Romy",          datetime.date(2026,10,11), "30th birthday HOOK", 13),
@@ -36,14 +58,13 @@ HOOKS = [("Romy",          datetime.date(2026,10,11), "30th birthday HOOK", 13),
          ("Zendaya",       datetime.date(2026,12,18), "Dune: Part Three HOOK", 9),
          ("Anya",          datetime.date(2026,12,18), "Dune: Part Three HOOK", 13),
          ("Rebecca",       datetime.date(2026,12,18), "Dune: Part Three HOOK", 19),
-         ("Olivia",        datetime.date(2027,2,20),  "24th birthday HOOK", 13),
          ("Lily Collins",  datetime.date(2027,3,18),  "38th birthday + Emily in Paris HOOK", 13),
          ("Elle",          datetime.date(2027,3,19),  "The Nightingale HOOK", 13)]
 
 events = []            # (date, hour, summary)
 anchor_days = set()
 
-for who, d, why in POSTS:
+for who, d, why, _confirmed in POSTS:
     anchor_days.add(d)
     events.append((d, 9,  f"[POST] {who} — {why}"))
     events.append((d, 13, f"[STORY] {who} — Carousel slide 1"))
@@ -66,8 +87,8 @@ TIMES = [13, 13, 19]
 # Olivia II are second portraits of subjects who already have published work).
 # Remove a name once its debut has run. Skipping does not lose anyone's turn;
 # the queue just reaches them later.
-UNPUBLISHED = {"Syd"}
-DEBUTS = {who: d for who, d, _ in POSTS if who in UNPUBLISHED}
+UNPUBLISHED = {"Syd", "Katrin"}
+DEBUTS = {who: d for who, d, *_ in POSTS if who in UNPUBLISHED}
 i = t = 0
 d = START
 while d <= END:
