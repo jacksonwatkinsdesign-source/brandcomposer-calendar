@@ -41,8 +41,9 @@ tell application "Calendar"
 	make new event at end of events of bc_cal with properties {summary:"[STORY] Gracie Abrams — Rotation baseline", start date:date "Monday, October 12, 2026 1:00:00 PM", end date:date "Monday, October 12, 2026 1:15:00 PM"}
 	make new event at end of events of bc_cal with properties {summary:"[STORY] Zendaya — Rotation baseline", start date:date "Tuesday, October 13, 2026 1:00:00 PM", end date:date "Tuesday, October 13, 2026 1:15:00 PM"}
 	make new event at end of events of bc_cal with properties {summary:"[STORY] Romy — Rotation baseline", start date:date "Wednesday, October 14, 2026 7:00:00 PM", end date:date "Wednesday, October 14, 2026 7:15:00 PM"}
-	make new event at end of events of bc_cal with properties {summary:"[POST] Emma — Debut, single image, rotation placement (no dated hook)", start date:date "Thursday, October 15, 2026 9:00:00 AM", end date:date "Thursday, October 15, 2026 9:15:00 AM"}
-	make new event at end of events of bc_cal with properties {summary:"[STORY] Emma — The image", start date:date "Thursday, October 15, 2026 1:00:00 PM", end date:date "Thursday, October 15, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[POST] Emma — Debut carousel, rotation placement (no dated hook)", start date:date "Thursday, October 15, 2026 9:00:00 AM", end date:date "Thursday, October 15, 2026 9:15:00 AM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Emma — Slide 1", start date:date "Thursday, October 15, 2026 1:00:00 PM", end date:date "Thursday, October 15, 2026 1:15:00 PM"}
+	make new event at end of events of bc_cal with properties {summary:"[STORY] Emma — Slide 2", start date:date "Thursday, October 15, 2026 7:00:00 PM", end date:date "Thursday, October 15, 2026 7:15:00 PM"}
 	make new event at end of events of bc_cal with properties {summary:"[STORY] Elle — Rotation baseline", start date:date "Friday, October 16, 2026 1:00:00 PM", end date:date "Friday, October 16, 2026 1:15:00 PM"}
 	make new event at end of events of bc_cal with properties {summary:"[STORY] Rebecca — 43rd birthday HOOK", start date:date "Monday, October 19, 2026 1:00:00 PM", end date:date "Monday, October 19, 2026 1:15:00 PM"}
 	make new event at end of events of bc_cal with properties {summary:"[POST] Odessa — Debut carousel, Stranger Things S2 momentum", start date:date "Tuesday, October 20, 2026 9:00:00 AM", end date:date "Tuesday, October 20, 2026 9:15:00 AM"}
@@ -171,4 +172,4 @@ tell application "Calendar"
 
 end tell
 
-display notification "BrandComposer calendar rebuilt with 164 events." with title "Calendar Update Complete"
+display notification "BrandComposer calendar rebuilt with 165 events." with title "Calendar Update Complete"

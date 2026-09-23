@@ -56,8 +56,8 @@ POSTS = [("Odessa", datetime.date(2026,10,20), "Debut carousel, Stranger Things 
           "Jackson, chat 2026-09-22: another one we can debut at some point", 2),
          ("Katrin", datetime.date(2026,10,8),  "Debut carousel, rotation placement (no dated hook)",
           "Jackson, chat 2026-09-23: a post to add to the schedule for debut", 2),
-         ("Emma",   datetime.date(2026,10,15), "Debut, single image, rotation placement (no dated hook)",
-          "Jackson, chat 2026-09-23: an Emma Chamberlain image I can debut", 1),
+         ("Emma",   datetime.date(2026,10,15), "Debut carousel, rotation placement (no dated hook)",
+          "Jackson, chat 2026-09-23: an Emma Chamberlain image I can debut; found the reference photo, two slides", 2),
          ("Olivia", datetime.date(2026,10,6),  "Olivia II debut carousel, Australian tour leg opens Oct 5",
           "Jackson, chat 2026-09-23: has an Olivia II never posted, checked the grid and it is not there", 2)]
 
