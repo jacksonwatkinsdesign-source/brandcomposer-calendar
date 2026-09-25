@@ -33,6 +33,13 @@ START, END = datetime.date(2026,9,3), datetime.date(2027,3,31)
 # MIN_REPEAT_DAYS have passed, exactly as if the schedule had run it that day.
 # Add a line whenever he says he posted something; nothing else needs changing.
 POSTED = [("Odessa", datetime.date(2026,9,22), "Jackson, chat 2026-09-23: posted Odessa yesterday")]
+
+# A slot Jackson has asked for by name, overriding whoever the rotation would
+# have picked. The subject is held for MIN_REPEAT_DAYS afterwards like any other
+# appearance, and the displaced subject keeps their place in the queue.
+PINNED = [("Elle", datetime.date(2026,9,25), 13,
+           "Jackson, chat 2026-09-25: swap Grace out today — she is 18, runs her own "
+           "accounts, and he does not want to keep putting his drawing in front of her")]
 MIN_REPEAT_DAYS = 21
 
 # Finished art, with a date, that JACKSON HAS SAID EXISTS. Each becomes a 9am
@@ -81,6 +88,10 @@ HOOKS = [("Romy",          datetime.date(2026,10,11), "30th birthday HOOK", 13),
 events = []            # (date, hour, summary)
 anchor_days = set()
 
+for who, d, hour, _why in PINNED:
+    anchor_days.add(d)
+    events.append((d, hour, f"[STORY] {who} — Rotation baseline"))
+
 for who, d, why, _confirmed, slides in POSTS:
     anchor_days.add(d)
     events.append((d, 9, f"[POST] {who} — {why}"))
@@ -110,6 +121,8 @@ UNPUBLISHED = {"Syd", "Katrin", "Emma"}
 DEBUTS = {who: d for who, d, *_ in POSTS if who in UNPUBLISHED}
 # A subject is also ineligible while an off-schedule post of theirs is still recent.
 BLACKOUT = {who: d + datetime.timedelta(days=MIN_REPEAT_DAYS) for who, d, _why in POSTED}
+for _who, _d, _hr, _why in PINNED:
+    BLACKOUT[_who] = max(BLACKOUT.get(_who, _d), _d + datetime.timedelta(days=MIN_REPEAT_DAYS))
 
 
 # A debut is a post of its own. The subject stays out of the rotation for
@@ -145,6 +158,14 @@ while d <= END:
                 break
     d += datetime.timedelta(days=1)
 
+# The past is a record, not a plan. The queue is still worked out from START so
+# the cycle stays continuous, but only today onward is written, and the script
+# clears only from today onward — so a rebuild can never invent or overwrite a
+# story on a day that has already happened.
+TODAY = datetime.date.today()
+WRITE_FROM = max(START, TODAY)
+events = [e for e in events if e[0] >= WRITE_FROM]
+
 events.sort(key=lambda e: (e[0], e[1]))
 
 def stamp(d, hour, minute=0):
@@ -154,7 +175,7 @@ def stamp(d, hour, minute=0):
 
 out = ['tell application "Calendar"',
        '\tset bc_cal to calendar "BrandComposer"',
-       f'\tset rangeStart to date "{stamp(START, 0)}"',
+       f'\tset rangeStart to date "{stamp(WRITE_FROM, 0)}"',
        f'\tset rangeEnd to date "{stamp(END + datetime.timedelta(days=1), 0)}"',
        '\tdelete (every event of bc_cal whose start date is greater than or equal to '
        'rangeStart and start date is less than rangeEnd)',
