@@ -69,8 +69,12 @@ POSTS = [("Odessa", datetime.date(2026,10,20), "Debut carousel, Stranger Things 
           "Jackson, chat 2026-09-23: confirmed the Odessa II art is finished; moved off Sept 29 because he posted Odessa Sept 22", 3),
          ("Elle",   datetime.date(2026,11,19), "Elle II debut carousel, Hunger Games eve",
           "Jackson, chat 2026-09-22: new Elle illustration, approved Nov 19 debut", 3),
-         ("Syd",    datetime.date(2026,10,1),  "Debut carousel, rotation placement (no dated hook)",
-          "Jackson, chat 2026-09-22: another one we can debut at some point", 3),
+         ("Syd",    datetime.date(2026,9,30),  "Debut carousel, no hook — shipped at the next available midweek slot",
+          "Jackson, chat 2026-09-22: another one we can debut at some point. "
+          "Moved from Thu Oct 1 to Wed Sep 30, chat 2026-09-27: a piece with no "
+          "thematic reason to sit is published at the next midweek slot rather "
+          "than held. Syd has also already responded warmly to this image when it "
+          "ran as a story only, so a debut is a live reason to tag her.", 3),
          ("Katrin", datetime.date(2026,10,8),  "Debut carousel, rotation placement (no dated hook)",
           "Jackson, chat 2026-09-23: a post to add to the schedule for debut", 3),
          ("Emma",   datetime.date(2026,10,15), "Debut carousel, rotation placement (no dated hook)",
