@@ -137,16 +137,24 @@ HOOKS = [("Romy",          datetime.date(2026,10,11), "30th birthday HOOK", 13),
 POST_DAY_TIMES = (9, 13, 19, 21)
 STORY_TIMES = (13, 19, 21)
 
-# How many images each ALREADY-PUBLISHED piece has, for reshares. Two is the
-# floor the strategy sets for every post, so it is the default. This table is
-# for corrections: once a piece's real slide count is known, put it here and the
-# rotation will story that many frames.
+# How many images a subject's PUBLISHED work actually has, for reshares.
 #
-# ASSUMED, NOT VERIFIED. Nothing in the insights log records slide counts, so
-# every published piece is currently treated as two images. Anything actually
-# posted as a single image will be over-storied until it is listed here.
-PUBLISHED_SLIDES = {}
-DEFAULT_PUBLISHED_SLIDES = 2
+# THE DEFAULT IS ONE, DELIBERATELY. The rotation must never schedule a frame for
+# an image that does not exist — a phantom "Slide 2" is an instruction Jackson
+# cannot follow, which is worse than a missed opportunity. So the default
+# under-promises, and a subject is raised only on evidence.
+#
+# The back catalogue is mostly single images. Of the 23 published posts, 20 are
+# one image; the only carousels are Gracie II (3), Grace (2) and Odessa (2).
+# Source: illustration-content-strategy-SYSTEM-DOCS.md, inventory of 4 Sep 2026.
+# Caught on 2026-09-27 after the calendar told Jackson to story a second Karlie
+# and Núria frame that does not exist.
+PUBLISHED_SLIDES = {
+    "Gracie Abrams": 3,   # Gracie II
+    "Grace":         2,   # Grace Bowers
+    "Odessa":        2,
+}
+DEFAULT_PUBLISHED_SLIDES = 1
 
 
 def frames(who, day, slides, note, post_day=False):
@@ -163,8 +171,18 @@ def frames(who, day, slides, note, post_day=False):
     return out
 
 
-def published_slides(who):
-    return PUBLISHED_SLIDES.get(who, DEFAULT_PUBLISHED_SLIDES)
+def published_slides(who, day):
+    """Most images available for this subject on this day.
+
+    A debut that has already run is published work, so once its date has passed
+    its slide count is available to the rotation. That keeps the table from
+    going stale every time a piece goes up.
+    """
+    best = PUBLISHED_SLIDES.get(who, DEFAULT_PUBLISHED_SLIDES)
+    for w, d, _why, _conf, n in POSTS:
+        if w == who and d < day:
+            best = max(best, n)
+    return best
 
 
 events = []            # (date, hour, summary)
@@ -175,7 +193,7 @@ for who, d, _hour, _why in PINNED:
     # A pinned slot is a hand-placed rotation slot, so it runs the full carousel
     # like any other reshare. The hour field is kept for the record but the
     # frames use STORY_TIMES so every story day looks the same.
-    events += frames(who, d, published_slides(who), " (pinned)")
+    events += frames(who, d, published_slides(who, d), " (pinned)")
 
 for who, d, why, _confirmed, slides in POSTS:
     anchor_days.add(d)
@@ -236,7 +254,7 @@ while d <= END:
             if eligible(who, d):
                 # A reshare runs the whole carousel, one native frame per image,
                 # so Jackson is told which slide to put up and when.
-                events += frames(who, d, published_slides(who), " (rotation)")
+                events += frames(who, d, published_slides(who, d), " (rotation)")
                 break
     d += datetime.timedelta(days=1)
 
