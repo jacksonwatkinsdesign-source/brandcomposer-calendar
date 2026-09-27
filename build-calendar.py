@@ -99,8 +99,19 @@ HOOKS = [("Romy",          datetime.date(2026,10,11), "30th birthday HOOK", 13),
 
 # Every image in a carousel runs as its own native story frame on the day that
 # piece appears — on a debut day and on a reshare day alike. Slide N goes out at
-# STORY_TIMES[N-1], so the frames are hours apart rather than back to back. 9am
-# is reserved for the post itself on debut days and is deliberately left out.
+# the Nth time below, so frames are hours apart rather than back to back.
+#
+# A debut day starts at 9am, with slide 1 going to stories at the same moment
+# the post goes up. That is Jackson's own long-standing practice and it is the
+# right one: the story lands inside the post's first distribution window, which
+# is the only lever he has on early engagement, and it widens the spread across
+# the day (9/1/7) instead of crowding the afternoon (1/7/9pm).
+#   Jackson, chat 2026-09-27: "normally that's what I have done... I debut it
+#   and then I immediately share at least the first of the carousel images at
+#   the same time that I do the post."
+#
+# A reshare day has no post to anchor to, so it starts at 1pm.
+POST_DAY_TIMES = (9, 13, 19, 21)
 STORY_TIMES = (13, 19, 21)
 
 # How many images each ALREADY-PUBLISHED piece has, for reshares. Two is the
@@ -115,17 +126,17 @@ PUBLISHED_SLIDES = {}
 DEFAULT_PUBLISHED_SLIDES = 2
 
 
-def frames(who, day, slides, note):
+def frames(who, day, slides, note, post_day=False):
     """One story event per image, spaced across the day."""
-    if slides > len(STORY_TIMES):
+    times = POST_DAY_TIMES if post_day else STORY_TIMES
+    if slides > len(times):
         raise SystemExit(
-            f"REFUSED: {who} {day} has {slides} images but only {len(STORY_TIMES)} "
-            f"story times exist. Add a time to STORY_TIMES rather than silently "
-            f"dropping frames.")
+            f"REFUSED: {who} {day} has {slides} images but only {len(times)} "
+            f"story times exist. Add a time rather than silently dropping frames.")
     out = []
     for n in range(1, slides + 1):
         label = f"Slide {n}" if slides > 1 else "The image"
-        out.append((day, STORY_TIMES[n - 1], f"[STORY] {who} — {label}{note}"))
+        out.append((day, times[n - 1], f"[STORY] {who} — {label}{note}"))
     return out
 
 
@@ -146,7 +157,7 @@ for who, d, _hour, _why in PINNED:
 for who, d, why, _confirmed, slides in POSTS:
     anchor_days.add(d)
     events.append((d, 9, f"[POST] {who} — {why}"))
-    events += frames(who, d, slides, "")
+    events += frames(who, d, slides, "", post_day=True)
 
 for who, d, why, hr in HOOKS:
     anchor_days.add(d)
