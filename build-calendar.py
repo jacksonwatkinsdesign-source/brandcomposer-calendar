@@ -18,12 +18,12 @@ OUTPUT = sys.argv[1] if len(sys.argv) > 1 else "update-calendar.scpt"
 # One entry per PERSON. Where a first name could mean more than one public
 # figure, the surname is recorded here: "Olivia" is Olivia DEAN (two published
 # portraits, both already debuted) and is not Olivia Rodrigo. "Katrin" is
-# @katrinkatjuscha, a Berlin streamer and model. "Emma" is Emma Chamberlain. "Grace" is a separate
+# @katrinkatjuscha, a Berlin streamer and model. "Emma" is Emma Chamberlain. "Florence" is Florence PUGH, not Florence Welch. "Grace" is a separate
 # person from "Gracie" (Gracie Abrams) — both are published, both rotate. A hook researched
 # for the wrong person is how a post for art that does not exist gets a date.
 ROSTER =["Emma","Grace","Karlie","Núria","Paula","Kate Bartlett","Erin","Amelie","Lily Collins",
           "Renate","Rebecca","Gracie Abrams","Zendaya","Romy","Elle","Anya",
-          "Odessa","Olivia","Faith Ordway","Syd","Katrin"]
+          "Odessa","Olivia","Faith Ordway","Syd","Katrin","Florence"]
 
 START, END = datetime.date(2026,9,3), datetime.date(2027,3,31)
 
@@ -67,7 +67,9 @@ POSTS = [("Odessa", datetime.date(2026,10,20), "Debut carousel, Stranger Things 
          ("Emma",   datetime.date(2026,10,15), "Debut carousel, rotation placement (no dated hook)",
           "Jackson, chat 2026-09-23: an Emma Chamberlain image I can debut; found the reference photo, two slides", 2),
          ("Olivia", datetime.date(2026,10,6),  "Olivia II debut carousel, Australian tour leg opens Oct 5",
-          "Jackson, chat 2026-09-23: has an Olivia II never posted, checked the grid and it is not there", 2)]
+          "Jackson, chat 2026-09-23: has an Olivia II never posted, checked the grid and it is not there", 2),
+         ("Florence", datetime.date(2026,12,17), "Florence P debut carousel, eve of Dune: Part Three and Avengers: Doomsday",
+          "Jackson, chat 2026-09-26: has a Florence Pugh piece, ready enough to put on the calendar, not likely to change much about it", 2)]
 
 for _who, _d, _why, _confirmed, _slides in POSTS:
     if not _confirmed.strip():
@@ -83,7 +85,8 @@ HOOKS = [("Romy",          datetime.date(2026,10,11), "30th birthday HOOK", 13),
          ("Anya",          datetime.date(2026,12,18), "Dune: Part Three HOOK", 13),
          ("Rebecca",       datetime.date(2026,12,18), "Dune: Part Three HOOK", 19),
          ("Lily Collins",  datetime.date(2027,3,18),  "38th birthday + Emily in Paris HOOK", 13),
-         ("Elle",          datetime.date(2027,3,19),  "The Nightingale HOOK", 13)]
+         ("Elle",          datetime.date(2027,3,19),  "The Nightingale HOOK", 13),
+         ("Florence",      datetime.date(2027,1,3),   "31st birthday HOOK", 13)]
 
 events = []            # (date, hour, summary)
 anchor_days = set()
@@ -117,7 +120,7 @@ TIMES = [13, 13, 19]
 # Olivia II are second portraits of subjects who already have published work).
 # Remove a name once its debut has run. Skipping does not lose anyone's turn;
 # the queue just reaches them later.
-UNPUBLISHED = {"Syd", "Katrin", "Emma"}
+UNPUBLISHED = {"Syd", "Katrin", "Emma", "Florence"}
 DEBUTS = {who: d for who, d, *_ in POSTS if who in UNPUBLISHED}
 # A subject is also ineligible while an off-schedule post of theirs is still recent.
 BLACKOUT = {who: d + datetime.timedelta(days=MIN_REPEAT_DAYS) for who, d, _why in POSTED}
