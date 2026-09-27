@@ -1,10 +1,9 @@
 tell application "Calendar"
 	set bc_cal to calendar "BrandComposer"
-	set rangeStart to date "Friday, September 25, 2026 12:00:00 AM"
+	set rangeStart to date "Sunday, September 27, 2026 12:00:00 AM"
 	set rangeEnd to date "Thursday, April 1, 2027 12:00:00 AM"
 	delete (every event of bc_cal whose start date is greater than or equal to rangeStart and start date is less than rangeEnd)
 
-	make new event at end of events of bc_cal with properties {summary:"[STORY] Elle — Rotation baseline", start date:date "Friday, September 25, 2026 1:00:00 PM", end date:date "Friday, September 25, 2026 1:15:00 PM"}
 	make new event at end of events of bc_cal with properties {summary:"[STORY] Karlie — Rotation baseline", start date:date "Monday, September 28, 2026 1:00:00 PM", end date:date "Monday, September 28, 2026 1:15:00 PM"}
 	make new event at end of events of bc_cal with properties {summary:"[STORY] Núria — Rotation baseline", start date:date "Tuesday, September 29, 2026 7:00:00 PM", end date:date "Tuesday, September 29, 2026 7:15:00 PM"}
 	make new event at end of events of bc_cal with properties {summary:"[STORY] Paula — Rotation baseline", start date:date "Wednesday, September 30, 2026 1:00:00 PM", end date:date "Wednesday, September 30, 2026 1:15:00 PM"}
@@ -156,4 +155,4 @@ tell application "Calendar"
 
 end tell
 
-display notification "BrandComposer calendar rebuilt with 149 events." with title "Calendar Update Complete"
+display notification "BrandComposer calendar rebuilt with 148 events." with title "Calendar Update Complete"
