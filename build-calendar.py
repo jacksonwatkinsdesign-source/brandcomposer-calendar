@@ -18,12 +18,13 @@ OUTPUT = sys.argv[1] if len(sys.argv) > 1 else "update-calendar.scpt"
 # One entry per PERSON. Where a first name could mean more than one public
 # figure, the surname is recorded here: "Olivia" is Olivia DEAN (two published
 # portraits, both already debuted) and is not Olivia Rodrigo. "Katrin" is
-# @katrinkatjuscha, a Berlin streamer and model. "Emma" is Emma Chamberlain. "Florence" is Florence PUGH, not Florence Welch. "Grace" is a separate
+# @katrinkatjuscha, a Berlin streamer and model. "Emma" is Emma Chamberlain. "Florence" is Florence PUGH, not Florence Welch.
+# "Samara" is Samara WEAVING, the Australian actress. "Grace" is a separate
 # person from "Gracie" (Gracie Abrams) — both are published, both rotate. A hook researched
 # for the wrong person is how a post for art that does not exist gets a date.
 ROSTER =["Emma","Grace","Karlie","Núria","Paula","Kate Bartlett","Erin","Amelie","Lily Collins",
           "Renate","Rebecca","Gracie Abrams","Zendaya","Romy","Elle","Anya",
-          "Odessa","Olivia","Faith Ordway","Syd","Katrin","Florence"]
+          "Odessa","Olivia","Faith Ordway","Syd","Katrin","Florence","Samara"]
 
 START, END = datetime.date(2026,9,3), datetime.date(2027,3,31)
 
@@ -58,6 +59,18 @@ MIN_REPEAT_DAYS = 21
 #   Jackson, chat 2026-09-27: "all debuts from now on will be at least three
 #   images in the carousel", and, asked whether the seven already scheduled
 #   should be bumped from two to three, he chose all seven.
+#
+# TIMELAPSE AVAILABILITY IS THE LIMIT, AND IT IS NOT RELIABLE. Fresco loses the
+# recording on some pieces — it exports a 3-second stub instead. Checked piece by
+# piece on 2026-09-27: Katrin, Elle II and Florence have full timelapses; Syd,
+# Olivia II, Emma, Odessa II and Samara do not, and never will. Those five are
+# two slides — illustration, then reference photograph.
+#
+# THREE REMAINS THE DEFAULT for anything added from here. Jackson, chat
+# 2026-09-27: "let's not change our rule... assume that you're going to have that
+# for everything going forward unless I just told you no." Only drop an entry to
+# two when he has said that piece has no timelapse.
+#
 # Slide two matters most: Instagram may re-serve it as a second first impression,
 # which is the best-evidenced mechanic in the strategy. The timelapse sits there
 # because it opens on the finished piece (verified — Fresco's frame 0 is the
@@ -66,7 +79,7 @@ MIN_REPEAT_DAYS = 21
 # photographer's. A single image forfeits the mechanic entirely and is only ever
 # used when Jackson says the piece is one image.
 POSTS = [("Odessa", datetime.date(2026,10,20), "Debut carousel, Stranger Things S2 momentum",
-          "Jackson, chat 2026-09-23: confirmed the Odessa II art is finished; moved off Sept 29 because he posted Odessa Sept 22", 3),
+          "Jackson, chat 2026-09-23: confirmed the Odessa II art is finished; moved off Sept 29 because he posted Odessa Sept 22", 2),
          ("Elle",   datetime.date(2026,11,19), "Elle II debut carousel, Hunger Games eve",
           "Jackson, chat 2026-09-22: new Elle illustration, approved Nov 19 debut", 3),
          ("Syd",    datetime.date(2026,9,30),  "Debut carousel, no hook — shipped at the next available midweek slot",
@@ -74,15 +87,21 @@ POSTS = [("Odessa", datetime.date(2026,10,20), "Debut carousel, Stranger Things 
           "Moved from Thu Oct 1 to Wed Sep 30, chat 2026-09-27: a piece with no "
           "thematic reason to sit is published at the next midweek slot rather "
           "than held. Syd has also already responded warmly to this image when it "
-          "ran as a story only, so a debut is a live reason to tag her.", 3),
+          "ran as a story only, so a debut is a live reason to tag her.", 2),
          ("Katrin", datetime.date(2026,10,8),  "Debut carousel, rotation placement (no dated hook)",
           "Jackson, chat 2026-09-23: a post to add to the schedule for debut", 3),
          ("Emma",   datetime.date(2026,10,15), "Debut carousel, rotation placement (no dated hook)",
-          "Jackson, chat 2026-09-23: an Emma Chamberlain image I can debut; found the reference photo, two slides", 3),
+          "Jackson, chat 2026-09-23: an Emma Chamberlain image I can debut; found the reference photo, two slides", 2),
          ("Olivia", datetime.date(2026,10,6),  "Olivia II debut carousel, Australian tour leg opens Oct 5",
-          "Jackson, chat 2026-09-23: has an Olivia II never posted, checked the grid and it is not there", 3),
+          "Jackson, chat 2026-09-23: has an Olivia II never posted, checked the grid and it is not there", 2),
          ("Florence", datetime.date(2026,12,17), "Florence P debut carousel, eve of Dune: Part Three and Avengers: Doomsday",
-          "Jackson, chat 2026-09-26: has a Florence Pugh piece, ready enough to put on the calendar, not likely to change much about it", 3)]
+          "Jackson, chat 2026-09-26: has a Florence Pugh piece, ready enough to put on the calendar, not likely to change much about it", 3),
+         ("Samara",   datetime.date(2026,10,28), "Debut carousel, no hook in window — first free week after the October run",
+          "Jackson, chat 2026-09-27: \"we can add a Samara Weaving post to the schedule, the drawing's already done, "
+          "it's just gotta be turned into a post\". Hook search found nothing usable inside the calendar window: "
+          "Over Your Dead Body finished its run (theatrical Apr, AMC+ Jul 2026) and The Legend of Zelda opens "
+          "30 Apr 2027, just past END. Her 35th birthday, 23 Feb 2027, is in range but Jackson has already "
+          "dismissed birthdays as a hook. So she is placed by the cadence rule, not by an occasion.", 2)]
 
 for _who, _d, _why, _confirmed, _slides in POSTS:
     if not _confirmed.strip():
@@ -179,7 +198,7 @@ for who, d, why, hr in HOOKS:
 # Olivia II are second portraits of subjects who already have published work).
 # Remove a name once its debut has run. Skipping does not lose anyone's turn;
 # the queue just reaches them later.
-UNPUBLISHED = {"Syd", "Katrin", "Emma", "Florence"}
+UNPUBLISHED = {"Syd", "Katrin", "Emma", "Florence", "Samara"}
 DEBUTS = {who: d for who, d, *_ in POSTS if who in UNPUBLISHED}
 # A subject is also ineligible while an off-schedule post of theirs is still recent.
 BLACKOUT = {who: d + datetime.timedelta(days=MIN_REPEAT_DAYS) for who, d, _why in POSTED}
