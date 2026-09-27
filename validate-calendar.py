@@ -35,7 +35,18 @@ except Exception as e:
     print(f"FATAL  cannot read the roster from build-calendar.py: {e}")
     sys.exit(2)
 
-MAX_GAP_DAYS = 32
+# The longest a subject may sit out before it is worth reporting. DERIVED, not
+# fixed — the same mistake the old hardcoded "30-day rotation" made. One story a
+# weekday means the queue takes as many working days to come round as there are
+# subjects, so the natural gap is roster x 7/5 calendar days, and it widens every
+# time a subject is added. A fixed 32 was correct at 22 subjects and turned every
+# ordinary gap into a warning at 23.
+#
+# CYCLE_SLACK is the headroom on top. A subject skipped on an anchor day waits an
+# extra turn, which is a normal outcome of the rotation, not inventory going idle.
+CYCLE_SLACK = 5
+def cycle_days(roster):
+    return round(len(roster) * 7 / 5)
 TAIL_WINDOW_DAYS = 60
 # The point of the rotation is that a viewer never feels they have seen this
 # before. MIN_REPEAT_DAYS is that rule: a subject may not come round again
@@ -51,6 +62,8 @@ TAIL_WINDOW_DAYS = 60
 # MIN_REPEAT_DAYS is the separate hard floor: closer than this and a viewer may
 # genuinely notice a repeat, whatever the roster size.
 MIN_REPEAT_DAYS = 21
+EXPECTED_CYCLE = cycle_days(ROSTER)
+MAX_GAP_DAYS = EXPECTED_CYCLE + CYCLE_SLACK
 CYCLE_SHORTFALL = 4  # days below the achievable cycle before it is reported
 MAX_SILENT_DAYS = 3
 COUNT_SPREAD = 4
@@ -262,11 +275,12 @@ for name, dates in sorted(by_sub.items()):
             observed_gaps.append((gap, name, a))
 
 if observed_gaps:
-    expected = round(len(ROSTER) * 7 / 5)
+    expected = EXPECTED_CYCLE
     tightest, name, a = min(observed_gaps)
     widest = max(observed_gaps)[0]
     print(f"Repeat spacing: {tightest}-{widest}d. A roster of {len(ROSTER)} posting "
-          f"five days a week supports about {expected}d.")
+          f"five days a week supports about {expected}d; a gap is only reported "
+          f"past {MAX_GAP_DAYS}d.")
     if tightest < expected - CYCLE_SHORTFALL:
         warn("tighter than the roster allows",
              f"{name} repeats after {tightest}d when {expected}d is achievable — "
