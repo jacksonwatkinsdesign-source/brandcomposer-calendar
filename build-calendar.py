@@ -52,24 +52,33 @@ MIN_REPEAT_DAYS = 21
 # suggest making something; it is never evidence that something was made.
 # Anything unconfirmed belongs in a recommendation to him, not on the calendar.
 # The build refuses to run if an entry has an empty confirmation.
-# Fifth field: how many images the piece actually has. Two or more is the norm —
-# Instagram may re-serve slide two as a second first impression, which is the
-# best-evidenced mechanic in the strategy. A single image forfeits that, so it is
-# only ever used when Jackson says the piece is one image.
+# Fifth field: how many images the piece actually has. THREE is now the norm for
+# a debut — the finished illustration, the Fresco timelapse of it being drawn,
+# then the reference photograph, in that order.
+#   Jackson, chat 2026-09-27: "all debuts from now on will be at least three
+#   images in the carousel", and, asked whether the seven already scheduled
+#   should be bumped from two to three, he chose all seven.
+# Slide two matters most: Instagram may re-serve it as a second first impression,
+# which is the best-evidenced mechanic in the strategy. The timelapse sits there
+# because it opens on the finished piece (verified — Fresco's frame 0 is the
+# completed artwork), so it works cold. The reference photo sits at slide three
+# so that a viewer served slide two first still sees Jackson's work, not the
+# photographer's. A single image forfeits the mechanic entirely and is only ever
+# used when Jackson says the piece is one image.
 POSTS = [("Odessa", datetime.date(2026,10,20), "Debut carousel, Stranger Things S2 momentum",
-          "Jackson, chat 2026-09-23: confirmed the Odessa II art is finished; moved off Sept 29 because he posted Odessa Sept 22", 2),
+          "Jackson, chat 2026-09-23: confirmed the Odessa II art is finished; moved off Sept 29 because he posted Odessa Sept 22", 3),
          ("Elle",   datetime.date(2026,11,19), "Elle II debut carousel, Hunger Games eve",
-          "Jackson, chat 2026-09-22: new Elle illustration, approved Nov 19 debut", 2),
+          "Jackson, chat 2026-09-22: new Elle illustration, approved Nov 19 debut", 3),
          ("Syd",    datetime.date(2026,10,1),  "Debut carousel, rotation placement (no dated hook)",
-          "Jackson, chat 2026-09-22: another one we can debut at some point", 2),
+          "Jackson, chat 2026-09-22: another one we can debut at some point", 3),
          ("Katrin", datetime.date(2026,10,8),  "Debut carousel, rotation placement (no dated hook)",
-          "Jackson, chat 2026-09-23: a post to add to the schedule for debut", 2),
+          "Jackson, chat 2026-09-23: a post to add to the schedule for debut", 3),
          ("Emma",   datetime.date(2026,10,15), "Debut carousel, rotation placement (no dated hook)",
-          "Jackson, chat 2026-09-23: an Emma Chamberlain image I can debut; found the reference photo, two slides", 2),
+          "Jackson, chat 2026-09-23: an Emma Chamberlain image I can debut; found the reference photo, two slides", 3),
          ("Olivia", datetime.date(2026,10,6),  "Olivia II debut carousel, Australian tour leg opens Oct 5",
-          "Jackson, chat 2026-09-23: has an Olivia II never posted, checked the grid and it is not there", 2),
+          "Jackson, chat 2026-09-23: has an Olivia II never posted, checked the grid and it is not there", 3),
          ("Florence", datetime.date(2026,12,17), "Florence P debut carousel, eve of Dune: Part Three and Avengers: Doomsday",
-          "Jackson, chat 2026-09-26: has a Florence Pugh piece, ready enough to put on the calendar, not likely to change much about it", 2)]
+          "Jackson, chat 2026-09-26: has a Florence Pugh piece, ready enough to put on the calendar, not likely to change much about it", 3)]
 
 for _who, _d, _why, _confirmed, _slides in POSTS:
     if not _confirmed.strip():
@@ -88,20 +97,56 @@ HOOKS = [("Romy",          datetime.date(2026,10,11), "30th birthday HOOK", 13),
          ("Elle",          datetime.date(2027,3,19),  "The Nightingale HOOK", 13),
          ("Florence",      datetime.date(2027,1,3),   "31st birthday HOOK", 13)]
 
+# Every image in a carousel runs as its own native story frame on the day that
+# piece appears — on a debut day and on a reshare day alike. Slide N goes out at
+# STORY_TIMES[N-1], so the frames are hours apart rather than back to back. 9am
+# is reserved for the post itself on debut days and is deliberately left out.
+STORY_TIMES = (13, 19, 21)
+
+# How many images each ALREADY-PUBLISHED piece has, for reshares. Two is the
+# floor the strategy sets for every post, so it is the default. This table is
+# for corrections: once a piece's real slide count is known, put it here and the
+# rotation will story that many frames.
+#
+# ASSUMED, NOT VERIFIED. Nothing in the insights log records slide counts, so
+# every published piece is currently treated as two images. Anything actually
+# posted as a single image will be over-storied until it is listed here.
+PUBLISHED_SLIDES = {}
+DEFAULT_PUBLISHED_SLIDES = 2
+
+
+def frames(who, day, slides, note):
+    """One story event per image, spaced across the day."""
+    if slides > len(STORY_TIMES):
+        raise SystemExit(
+            f"REFUSED: {who} {day} has {slides} images but only {len(STORY_TIMES)} "
+            f"story times exist. Add a time to STORY_TIMES rather than silently "
+            f"dropping frames.")
+    out = []
+    for n in range(1, slides + 1):
+        label = f"Slide {n}" if slides > 1 else "The image"
+        out.append((day, STORY_TIMES[n - 1], f"[STORY] {who} — {label}{note}"))
+    return out
+
+
+def published_slides(who):
+    return PUBLISHED_SLIDES.get(who, DEFAULT_PUBLISHED_SLIDES)
+
+
 events = []            # (date, hour, summary)
 anchor_days = set()
 
-for who, d, hour, _why in PINNED:
+for who, d, _hour, _why in PINNED:
     anchor_days.add(d)
-    events.append((d, hour, f"[STORY] {who} — Rotation baseline"))
+    # A pinned slot is a hand-placed rotation slot, so it runs the full carousel
+    # like any other reshare. The hour field is kept for the record but the
+    # frames use STORY_TIMES so every story day looks the same.
+    events += frames(who, d, published_slides(who), " (pinned)")
 
 for who, d, why, _confirmed, slides in POSTS:
     anchor_days.add(d)
     events.append((d, 9, f"[POST] {who} — {why}"))
-    # Every image runs as its own native story frame on post day, spaced apart.
-    for n, hour in zip(range(1, slides + 1), (13, 19, 21)):
-        label = f"Slide {n}" if slides > 1 else "The image"
-        events.append((d, hour, f"[STORY] {who} — {label}"))
+    events += frames(who, d, slides, "")
 
 for who, d, why, hr in HOOKS:
     anchor_days.add(d)
@@ -113,7 +158,6 @@ for who, d, why, hr in HOOKS:
 # Mon-Fri covers the best window every week without inventing a rhythm his own
 # log has never tested. Anchor days are skipped rather than doubled up — the
 # queue does not advance, so nobody is passed over.
-TIMES = [13, 13, 19]
 # Subjects with nothing published yet: the rotation may not story them before
 # their debut, because there is no art to reshare. Subjects already on the grid
 # are not listed here even when a second piece is coming (Elle II, Odessa II,
@@ -148,7 +192,7 @@ def eligible(who, day):
         if pd - QUIET < day < pd + QUIET:
             return False                               # quiet window around a debut
     return True
-i = t = 0
+i = 0
 d = START
 while d <= END:
     if d.weekday() < 5 and d not in anchor_days:
@@ -156,8 +200,9 @@ while d <= END:
             who = ROSTER[i % len(ROSTER)]
             i += 1
             if eligible(who, d):
-                events.append((d, TIMES[t % 3], f"[STORY] {who} — Rotation baseline"))
-                t += 1
+                # A reshare runs the whole carousel, one native frame per image,
+                # so Jackson is told which slide to put up and when.
+                events += frames(who, d, published_slides(who), " (rotation)")
                 break
     d += datetime.timedelta(days=1)
 

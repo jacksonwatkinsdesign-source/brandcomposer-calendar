@@ -55,7 +55,9 @@ CYCLE_SHORTFALL = 4  # days below the achievable cycle before it is reported
 MAX_SILENT_DAYS = 3
 COUNT_SPREAD = 4
 MAX_PER_DAY = 7
-ALLOWED_TIMES = {"9:00:00 AM", "1:00:00 PM", "7:00:00 PM"}
+# 9am is the post slot. 1pm / 7pm / 9pm are the three story-frame slots, one
+# per carousel image, spaced across the day.
+ALLOWED_TIMES = {"9:00:00 AM", "1:00:00 PM", "7:00:00 PM", "9:00:00 PM"}
 
 # AppleScript can express an event date two ways, and the generator uses both:
 #   inline    ... start date:date "Thursday, September 3, 2026 9:00:00 AM"
