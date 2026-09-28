@@ -186,6 +186,47 @@ for e in events:
     if e["time"] not in ALLOWED_TIMES:
         fail("allowed times", f"{e['time']} on {e['date']} — {e['summary']!r}")
 
+# --- alarms ------------------------------------------------------------------
+# An event on the calendar is not a reminder. Jackson was missing posts by up to
+# two hours because nothing told him, so every event must carry an alarm: 30
+# minutes before a debut (time to check the caption, credits and tags), 5 before
+# a story frame. A silent regression here looks exactly like a working calendar,
+# which is why it is checked rather than trusted.
+ALARM_MINUTES = {"POST": 30, "STORY": 5}
+EVENT_RE = re.compile(r'^\s*set\s+(ev\d+)\s+to\s+make new event\b')
+ALARM_RE = re.compile(r'^\s*make new display alarm at end of display alarms of\s+(ev\d+)\s+'
+                      r'with properties\s*\{trigger interval:-(\d+)\}')
+
+declared, alarms = {}, {}
+for line in text.splitlines():
+    m = EVENT_RE.match(line)
+    if m:
+        sm = SUMMARY_RE.search(line)
+        declared[m.group(1)] = sm.group(1) if sm else ""
+        continue
+    m = ALARM_RE.match(line)
+    if m:
+        alarms[m.group(1)] = int(m.group(2))
+
+if not declared:
+    fail("events carry alarms",
+         "no event is bound to a variable, so no alarm can be attached — the "
+         "generator has regressed to bare `make new event`")
+else:
+    for var, summary in sorted(declared.items()):
+        kind = "POST" if summary.startswith("[POST]") else "STORY"
+        want = ALARM_MINUTES[kind]
+        got = alarms.get(var)
+        if got is None:
+            fail("events carry alarms", f"no alarm on {summary!r}")
+        elif got != want:
+            fail("alarm lead time",
+                 f"{summary!r} alerts {got}m before; a {kind.lower()} should be {want}m")
+    stray = set(alarms) - set(declared)
+    if stray:
+        fail("alarms attach to real events",
+             f"{len(stray)} alarm(s) reference an event that is not declared")
+
 # --- naming -----------------------------------------------------------------
 for e in events:
     s = e["subject"]

@@ -289,11 +289,25 @@ out = ['tell application "Calendar"',
        '\tdelete (every event of bc_cal whose start date is greater than or equal to '
        'rangeStart and start date is less than rangeEnd)',
        '']
-for d, hour, summary in events:
+# An event on the calendar is not a reminder. Jackson was missing posts by
+# thirty minutes to two hours because nothing actually told him. Every event now
+# carries an alarm.
+#   Jackson, chat 2026-09-28: "they need like a notification five minutes
+#   before... five minutes before if it's a reshare, and 30 minutes before if
+#   it's a debut, which gives me time to make sure the caption's written."
+# A debut needs the longer lead because a caption, credits and tags have to be
+# ready before 9am, not at 9am.
+ALARM_MINUTES = {"POST": 30, "STORY": 5}
+
+for i, (d, hour, summary) in enumerate(events):
     end_h, end_m = (hour, 15)
-    out.append(f'\tmake new event at end of events of bc_cal with properties '
+    kind = "POST" if summary.startswith("[POST]") else "STORY"
+    lead = ALARM_MINUTES[kind]
+    out.append(f'\tset ev{i} to make new event at end of events of bc_cal with properties '
                f'{{summary:"{summary}", start date:date "{stamp(d, hour)}", '
                f'end date:date "{stamp(d, end_h, end_m)}"}}')
+    out.append(f'\tmake new display alarm at end of display alarms of ev{i} '
+               f'with properties {{trigger interval:-{lead}}}')
 out += ['', 'end tell', '',
         f'display notification "BrandComposer calendar rebuilt with {len(events)} events." '
         f'with title "Calendar Update Complete"']
