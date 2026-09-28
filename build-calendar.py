@@ -19,12 +19,14 @@ OUTPUT = sys.argv[1] if len(sys.argv) > 1 else "update-calendar.scpt"
 # figure, the surname is recorded here: "Olivia" is Olivia DEAN (two published
 # portraits, both already debuted) and is not Olivia Rodrigo. "Katrin" is
 # @katrinkatjuscha, a Berlin streamer and model. "Emma" is Emma Chamberlain. "Florence" is Florence PUGH, not Florence Welch.
-# "Samara" is Samara WEAVING, the Australian actress. "Grace" is a separate
+# "Samara" is Samara WEAVING, the Australian actress. "Inde" is Inde NAVARRETTE
+# — two r's, and Inde not Indy. Jackson says it "Navaretti"; the spelling is what
+# goes in a caption or a tag, so do not follow the pronunciation. "Grace" is a separate
 # person from "Gracie" (Gracie Abrams) — both are published, both rotate. A hook researched
 # for the wrong person is how a post for art that does not exist gets a date.
 ROSTER =["Emma","Grace","Karlie","Núria","Paula","Kate Bartlett","Erin","Amelie","Lily Collins",
           "Renate","Rebecca","Gracie Abrams","Zendaya","Romy","Elle","Anya",
-          "Odessa","Olivia","Faith Ordway","Syd","Katrin","Florence","Samara"]
+          "Odessa","Olivia","Faith Ordway","Syd","Katrin","Florence","Samara","Inde"]
 
 START, END = datetime.date(2026,9,3), datetime.date(2027,3,31)
 
@@ -101,7 +103,14 @@ POSTS = [("Odessa", datetime.date(2026,10,20), "Debut carousel, Stranger Things 
           "it's just gotta be turned into a post\". Hook search found nothing usable inside the calendar window: "
           "Over Your Dead Body finished its run (theatrical Apr, AMC+ Jul 2026) and The Legend of Zelda opens "
           "30 Apr 2027, just past END. Her 35th birthday, 23 Feb 2027, is in range but Jackson has already "
-          "dismissed birthdays as a hook. So she is placed by the cadence rule, not by an occasion.", 2)]
+          "dismissed birthdays as a hook. So she is placed by the cadence rule, not by an occasion.", 2),
+         ("Inde",     datetime.date(2026,11,3),  "Debut carousel, riding the SNL Halloween episode she hosted 31 Oct",
+          "Jackson, chat 2026-09-27: an Inde Navarrette illustration that can be used, with the original photo "
+          "and a timelapse, so it can be added to the calendar. Hook: she hosts the Saturday Night Live "
+          "Halloween episode, Sat 31 Oct 2026, confirmed on NBC's own site. Placed the TUESDAY AFTER rather "
+          "than the eve: a film release builds anticipation beforehand, but SNL generates its material during "
+          "and after — clips drop Sunday and searches peak Mon-Tue. It also lands in an empty week, where the "
+          "Thursday before would have been a second debut in Samara's week.", 3)]
 
 for _who, _d, _why, _confirmed, _slides in POSTS:
     if not _confirmed.strip():
@@ -216,7 +225,7 @@ for who, d, why, hr in HOOKS:
 # Olivia II are second portraits of subjects who already have published work).
 # Remove a name once its debut has run. Skipping does not lose anyone's turn;
 # the queue just reaches them later.
-UNPUBLISHED = {"Syd", "Katrin", "Emma", "Florence", "Samara"}
+UNPUBLISHED = {"Syd", "Katrin", "Emma", "Florence", "Samara", "Inde"}
 DEBUTS = {who: d for who, d, *_ in POSTS if who in UNPUBLISHED}
 # A subject is also ineligible while an off-schedule post of theirs is still recent.
 BLACKOUT = {who: d + datetime.timedelta(days=MIN_REPEAT_DAYS) for who, d, _why in POSTED}
