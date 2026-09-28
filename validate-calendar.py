@@ -344,8 +344,10 @@ for a, b in zip(active_days, active_days[1:]):
     if silent > MAX_SILENT_DAYS:
         fail("consistency", f"{silent} days with nothing posted, {a} to {b}")
 
-if "180" in text:
-    warn("stale count", "the string '180' still appears — likely a leftover claim")
+# A bare substring match also hit the ev### event variables the alarm change
+# introduced, so this looks for 180 as a standalone number.
+if re.search(r"\b180\b", text):
+    warn("stale count", "the number 180 still appears — likely a leftover claim")
 
 # --- report -----------------------------------------------------------------
 print(f"Parsed {len(events)} events, {len(counts)} of {len(ROSTER)} roster subjects, "
