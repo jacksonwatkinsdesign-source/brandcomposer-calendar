@@ -5,6 +5,7 @@ Turns the prompt's soft instructions into enforced constraints. Exits non-zero
 with a readable report if the generator produced a broken rotation, so the
 workflow keeps the last known-good script instead of committing over it.
 """
+import os
 import re
 import sys
 import pathlib
@@ -226,6 +227,30 @@ else:
     if stray:
         fail("alarms attach to real events",
              f"{len(stray)} alarm(s) reference an event that is not declared")
+
+# --- nothing silently dropped from the source lists --------------------------
+# CONFIRMED_POSTS is read from build-calendar.py, so a debut DELETED from POSTS
+# disappears from both the schedule and the checker at once and every other rule
+# still passes. That happened on 2 October 2026: removing Syd took Katrin's entry
+# with it and the build went green with her debut six days away. Any subject held
+# out of the rotation as unpublished must have a debut to be waiting for.
+try:
+    import re as _re
+    _src = open(GENERATOR, encoding="utf-8").read() if "GENERATOR" in dir() else open(
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "build-calendar.py"),
+        encoding="utf-8").read()
+    _unpub = _re.search(r"^UNPUBLISHED = \{(.*?)\}$", _src, _re.M)
+    if _unpub:
+        _names = _re.findall(r'"([^"]+)"', _unpub.group(1))
+        _have = {w for w, _d in CONFIRMED_POSTS}
+        for _n in _names:
+            if _n not in _have:
+                fail("unpublished subject has a debut",
+                     f"{_n} is held out of the rotation as unpublished but has no entry "
+                     f"in POSTS — either the debut was deleted, or remove the name from "
+                     f"UNPUBLISHED because the piece has gone up")
+except Exception as _e:
+    warn("dropped-debut check", f"could not run: {_e}")
 
 # --- naming -----------------------------------------------------------------
 for e in events:
