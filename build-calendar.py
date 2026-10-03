@@ -37,8 +37,14 @@ START, END = datetime.date(2026,9,3), datetime.date(2027,3,31)
 # again too soon. A subject listed here is held out of the rotation until
 # MIN_REPEAT_DAYS have passed, exactly as if the schedule had run it that day.
 # Add a line whenever he says he posted something; nothing else needs changing.
-POSTED = [("Odessa", datetime.date(2026,9,22), "Jackson, chat 2026-09-23: posted Odessa yesterday"),
-          ("Syd",    datetime.date(2026,9,30), "Jackson, chat 2026-10-02: confirmed the Syd debut went up on the 30th")]
+# The Odessa entry that sat here was wrong and was removed on 2026-10-02.
+# "Posted Odessa yesterday" (chat 2026-09-23) meant he STORIED the existing
+# Odessa post of 31 August, which the 24 September insights run confirmed: the
+# story archive shows the Odessa portrait and its reference photograph on 22
+# September, both pointing at post #21. There has only ever been one Odessa
+# post. Odessa II is finished but unposted and debuts 20 October.
+# The lesson: "posted" in conversation can mean storied. Confirm which.
+POSTED = [("Syd", datetime.date(2026,9,30), "Jackson, chat 2026-10-02: confirmed the Syd debut went up on the 30th")]
 
 # A slot Jackson has asked for by name, overriding whoever the rotation would
 # have picked. The subject is held for MIN_REPEAT_DAYS afterwards like any other
