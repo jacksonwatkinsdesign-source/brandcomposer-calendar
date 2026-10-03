@@ -37,7 +37,8 @@ START, END = datetime.date(2026,9,3), datetime.date(2027,3,31)
 # again too soon. A subject listed here is held out of the rotation until
 # MIN_REPEAT_DAYS have passed, exactly as if the schedule had run it that day.
 # Add a line whenever he says he posted something; nothing else needs changing.
-POSTED = [("Odessa", datetime.date(2026,9,22), "Jackson, chat 2026-09-23: posted Odessa yesterday")]
+POSTED = [("Odessa", datetime.date(2026,9,22), "Jackson, chat 2026-09-23: posted Odessa yesterday"),
+          ("Syd",    datetime.date(2026,9,30), "Jackson, chat 2026-10-02: confirmed the Syd debut went up on the 30th")]
 
 # A slot Jackson has asked for by name, overriding whoever the rotation would
 # have picked. The subject is held for MIN_REPEAT_DAYS afterwards like any other
@@ -86,14 +87,6 @@ POSTS = [("Odessa", datetime.date(2026,10,20), "Debut carousel, Stranger Things 
           "Jackson, chat 2026-09-23: confirmed the Odessa II art is finished; moved off Sept 29 because he posted Odessa Sept 22", 2),
          ("Elle",   datetime.date(2026,11,19), "Elle II debut carousel, Hunger Games eve",
           "Jackson, chat 2026-09-22: new Elle illustration, approved Nov 19 debut", 3),
-         ("Syd",    datetime.date(2026,9,30),  "Debut carousel, no hook — shipped at the next available midweek slot",
-          "Jackson, chat 2026-09-22: another one we can debut at some point. "
-          "Moved from Thu Oct 1 to Wed Sep 30, chat 2026-09-27: a piece with no "
-          "thematic reason to sit is published at the next midweek slot rather "
-          "than held. Syd has also already responded warmly to this image when it "
-          "ran as a story only, so a debut is a live reason to tag her.", 2),
-         ("Katrin", datetime.date(2026,10,8),  "Debut carousel, rotation placement (no dated hook)",
-          "Jackson, chat 2026-09-23: a post to add to the schedule for debut", 3),
          ("Emma",   datetime.date(2026,10,15), "Debut carousel, rotation placement (no dated hook)",
           "Jackson, chat 2026-09-23: an Emma Chamberlain image I can debut; found the reference photo, two slides", 2),
          ("Olivia", datetime.date(2026,10,6),  "Olivia II debut carousel, Australian tour leg opens Oct 5",
@@ -178,6 +171,7 @@ PUBLISHED_SLIDES = {
     "Gracie Abrams": 3,   # Gracie II
     "Grace":         2,   # Grace Bowers
     "Odessa":        2,
+    "Syd":           2,   # debuted 30 Sep 2026; no timelapse, so illustration + reference
 }
 DEFAULT_PUBLISHED_SLIDES = 1
 
@@ -241,7 +235,7 @@ for who, d, why, hr in HOOKS:
 # Olivia II are second portraits of subjects who already have published work).
 # Remove a name once its debut has run. Skipping does not lose anyone's turn;
 # the queue just reaches them later.
-UNPUBLISHED = {"Syd", "Katrin", "Emma", "Florence", "Samara", "Inde", "Bea"}
+UNPUBLISHED = {"Katrin", "Emma", "Florence", "Samara", "Inde", "Bea"}
 DEBUTS = {who: d for who, d, *_ in POSTS if who in UNPUBLISHED}
 # A subject is also ineligible while an off-schedule post of theirs is still recent.
 BLACKOUT = {who: d + datetime.timedelta(days=MIN_REPEAT_DAYS) for who, d, _why in POSTED}
