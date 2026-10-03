@@ -83,14 +83,14 @@ MIN_REPEAT_DAYS = 21
 # so that a viewer served slide two first still sees Jackson's work, not the
 # photographer's. A single image forfeits the mechanic entirely and is only ever
 # used when Jackson says the piece is one image.
-POSTS = [("Odessa", datetime.date(2026,10,20), "Debut carousel, Stranger Things S2 momentum",
+POSTS = [("Odessa", datetime.date(2026,10,20), "Debut carousel — Stranger Things S2 hook EXPIRED (aired 17 Sep), treat as hookless",
           "Jackson, chat 2026-09-23: confirmed the Odessa II art is finished; moved off Sept 29 because he posted Odessa Sept 22", 2),
          ("Elle",   datetime.date(2026,11,19), "Elle II debut carousel, Hunger Games eve",
           "Jackson, chat 2026-09-22: new Elle illustration, approved Nov 19 debut", 3),
-         ("Katrin", datetime.date(2026,10,8),  "Debut carousel, rotation placement (no dated hook)",
-          "Jackson, chat 2026-09-23: a post to add to the schedule for debut", 3),
-         ("Emma",   datetime.date(2026,10,15), "Debut carousel, rotation placement (no dated hook)",
-          "Jackson, chat 2026-09-23: an Emma Chamberlain image I can debut; found the reference photo, two slides", 2),
+         ("Katrin", datetime.date(2026,11,10), "Debut carousel, no hook — placed to even the run",
+          "Jackson, chat 2026-09-23: a post to add to the schedule for debut. Moved from Thu 8 Oct, chat 2026-10-02: she was the second debut in Olivia's week while 9 Nov sat empty. Hookless, so the date is free to move and this fills a hole instead of doubling a full week.", 3),
+         ("Emma",   datetime.date(2026,12,1),  "Debut carousel, no hook — placed to even the run",
+          "Jackson, chat 2026-09-23: an Emma Chamberlain image I can debut; found the reference photo, two slides. Moved from Thu 15 Oct, chat 2026-10-02: she was the second debut in Bea's week while late Nov and Dec sat empty. Pushed furthest of the two because Jackson said she is high-profile enough that a thematic hook may yet turn up — if one does, move her to meet it.", 2),
          ("Olivia", datetime.date(2026,10,6),  "Olivia II debut carousel, Australian tour leg opens Oct 5",
           "Jackson, chat 2026-09-23: has an Olivia II never posted, checked the grid and it is not there", 2),
          ("Florence", datetime.date(2026,12,17), "Florence P debut carousel, eve of Dune: Part Three and Avengers: Doomsday",
