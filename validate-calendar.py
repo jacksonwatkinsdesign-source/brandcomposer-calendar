@@ -242,10 +242,22 @@ for e in events:
         fail("posts are confirmed",
              f"invented post: {e['subject']} on {e['date']} — art is not committed")
 
+# The generator only writes from today forward, so a debut whose date has passed
+# is absent by design — it already happened. Only a confirmed post still in the
+# future can be "dropped". Without this the build starts failing the morning
+# after every debut, which is both wrong and the kind of failure that gets
+# ignored.
 scheduled_posts = {(e["subject"], e["date"]) for e in events if e["kind"] == "POST"}
+TODAY = datetime.date.today()
 for subject, date in set(CONFIRMED_POSTS) - scheduled_posts:
-    fail("confirmed posts kept",
-         f"{subject} {date} is confirmed art but was dropped from this run")
+    if date < TODAY:
+        warn("debut has passed",
+             f"{subject} {date} has already run. Move it from POSTS to POSTED in "
+             f"build-calendar.py once Jackson confirms it went up, so the rotation "
+             f"knows when that subject last appeared.")
+    else:
+        fail("confirmed posts kept",
+             f"{subject} {date} is confirmed art but was dropped from this run")
 
 for subject, date in set(CONFIRMED_POSTS) & scheduled_posts:
     frames = [e for e in events if e["subject"] == subject and e["date"] == date

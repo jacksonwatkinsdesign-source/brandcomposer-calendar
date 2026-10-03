@@ -19,6 +19,8 @@ OUTPUT = sys.argv[1] if len(sys.argv) > 1 else "update-calendar.scpt"
 # figure, the surname is recorded here: "Olivia" is Olivia DEAN (two published
 # portraits, both already debuted) and is not Olivia Rodrigo. "Katrin" is
 # @katrinkatjuscha, a Berlin streamer and model. "Emma" is Emma Chamberlain. "Florence" is Florence PUGH, not Florence Welch.
+# "Bea" is BEABADOOBEE — Beatrice Kristi Ilejay Laus. One word, all lowercase,
+# in the caption and the tag.
 # "Samara" is Samara WEAVING, the Australian actress. "Inde" is Inde NAVARRETTE
 # — two r's, and Inde not Indy. Jackson says it "Navaretti"; the spelling is what
 # goes in a caption or a tag, so do not follow the pronunciation. "Grace" is a separate
@@ -26,7 +28,7 @@ OUTPUT = sys.argv[1] if len(sys.argv) > 1 else "update-calendar.scpt"
 # for the wrong person is how a post for art that does not exist gets a date.
 ROSTER =["Emma","Grace","Karlie","Núria","Paula","Kate Bartlett","Erin","Amelie","Lily Collins",
           "Renate","Rebecca","Gracie Abrams","Zendaya","Romy","Elle","Anya",
-          "Odessa","Olivia","Faith Ordway","Syd","Katrin","Florence","Samara","Inde"]
+          "Odessa","Olivia","Faith Ordway","Syd","Katrin","Florence","Samara","Inde","Bea"]
 
 START, END = datetime.date(2026,9,3), datetime.date(2027,3,31)
 
@@ -110,7 +112,17 @@ POSTS = [("Odessa", datetime.date(2026,10,20), "Debut carousel, Stranger Things 
           "Halloween episode, Sat 31 Oct 2026, confirmed on NBC's own site. Placed the TUESDAY AFTER rather "
           "than the eve: a film release builds anticipation beforehand, but SNL generates its material during "
           "and after — clips drop Sunday and searches peak Mon-Tue. It also lands in an empty week, where the "
-          "Thursday before would have been a second debut in Samara's week.", 3)]
+          "Thursday before would have been a second debut in Samara's week.", 3),
+         ("Bea",      datetime.date(2026,10,13), "Debut carousel, eve of her Atlanta arena date — LOCAL HOOK TEST",
+          "Jackson, chat 2026-10-02: finished a beabadoobee piece with the original photograph and a "
+          "timelapse, ready to go. Hook: she plays Gas South Arena, Duluth GA, Wed 14 Oct, on her first "
+          "arena tour (1-29 Oct NA, album Pylon out 18 Sep 2026). Placed the eve rather than the day "
+          "because Emma debuts Thu 15 and the 14th would stack two debuts back to back. "
+          "THIS ONE IS A TEST, AND THE LOG SHOULD TREAT IT AS ONE: every hook used so far attaches the "
+          "account to a global event it is invisible inside. A local arena show is the first hook where "
+          "the mechanism is plausible at 372 followers — Atlanta is his largest follower city (27, "
+          "against Birmingham at 10) and Instagram surfaces by location. Measure NON-FOLLOWER SHARE "
+          "after the stories expire, not raw views; raw views move because he promoted it.", 3)]
 
 for _who, _d, _why, _confirmed, _slides in POSTS:
     if not _confirmed.strip():
@@ -142,8 +154,12 @@ HOOKS = [("Romy",          datetime.date(2026,10,11), "30th birthday HOOK", 13),
 #   and then I immediately share at least the first of the carousel images at
 #   the same time that I do the post."
 #
-# A reshare day has no post to anchor to, so it starts at 1pm.
+# A reshare day has no post to anchor to, so it starts at 1pm — except at four
+# slides, where it needs the whole day. Picking the tuple by slide count keeps
+# the common cases well spread instead of front-loading a two-frame day into the
+# morning. Four slides exist because of the alternate-colourway slide.
 POST_DAY_TIMES = (9, 13, 19, 21)
+STORY_TIMES_BY_COUNT = {4: (9, 13, 19, 21)}
 STORY_TIMES = (13, 19, 21)
 
 # How many images a subject's PUBLISHED work actually has, for reshares.
@@ -168,7 +184,7 @@ DEFAULT_PUBLISHED_SLIDES = 1
 
 def frames(who, day, slides, note, post_day=False):
     """One story event per image, spaced across the day."""
-    times = POST_DAY_TIMES if post_day else STORY_TIMES
+    times = POST_DAY_TIMES if post_day else STORY_TIMES_BY_COUNT.get(slides, STORY_TIMES)
     if slides > len(times):
         raise SystemExit(
             f"REFUSED: {who} {day} has {slides} images but only {len(times)} "
@@ -225,7 +241,7 @@ for who, d, why, hr in HOOKS:
 # Olivia II are second portraits of subjects who already have published work).
 # Remove a name once its debut has run. Skipping does not lose anyone's turn;
 # the queue just reaches them later.
-UNPUBLISHED = {"Syd", "Katrin", "Emma", "Florence", "Samara", "Inde"}
+UNPUBLISHED = {"Syd", "Katrin", "Emma", "Florence", "Samara", "Inde", "Bea"}
 DEBUTS = {who: d for who, d, *_ in POSTS if who in UNPUBLISHED}
 # A subject is also ineligible while an off-schedule post of theirs is still recent.
 BLACKOUT = {who: d + datetime.timedelta(days=MIN_REPEAT_DAYS) for who, d, _why in POSTED}
