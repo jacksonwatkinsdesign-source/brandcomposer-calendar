@@ -1,6 +1,6 @@
 tell application "Calendar"
 	set bc_cal to calendar "BrandComposer"
-	set rangeStart to date "Saturday, October 3, 2026 12:00:00 AM"
+	set rangeStart to date "Sunday, October 4, 2026 12:00:00 AM"
 	set rangeEnd to date "Thursday, April 1, 2027 12:00:00 AM"
 	delete (every event of bc_cal whose start date is greater than or equal to rangeStart and start date is less than rangeEnd)
 
