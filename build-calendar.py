@@ -26,9 +26,15 @@ OUTPUT = sys.argv[1] if len(sys.argv) > 1 else "update-calendar.scpt"
 # goes in a caption or a tag, so do not follow the pronunciation. "Grace" is a separate
 # person from "Gracie" (Gracie Abrams) — both are published, both rotate. A hook researched
 # for the wrong person is how a post for art that does not exist gets a date.
+# "Margaret" is Margaret QUALLEY, the American actress. TWO finished pieces, so she
+# appears twice in POSTS and once here. "Jessie" is Jessie BUCKLEY, the Irish actress
+# who won Best Actress for Hamnet in March 2026 — not Jessie Ware. "Chloé" is Chloé
+# LECAREUX, the French model signed to Select Model Management (Paris/Miami/LA).
+# Lecareux is ONE word — Jackson said "Chloe Le Carreux" in chat and the agency
+# spelling is what goes in a caption or a tag.
 ROSTER =["Emma","Grace","Karlie","Núria","Paula","Kate Bartlett","Erin","Amelie","Lily Collins",
           "Renate","Rebecca","Gracie Abrams","Zendaya","Romy","Elle","Anya",
-          "Odessa","Olivia","Faith Ordway","Syd","Katrin","Florence","Samara","Inde","Bea"]
+          "Odessa","Olivia","Faith Ordway","Syd","Katrin","Florence","Samara","Inde","Bea","Margaret","Jessie","Chloé"]
 
 START, END = datetime.date(2026,9,3), datetime.date(2027,3,31)
 
@@ -123,7 +129,15 @@ POSTS = [("Odessa", datetime.date(2026,10,20), "Debut carousel — Stranger Thin
           "account to a global event it is invisible inside. A local arena show is the first hook where "
           "the mechanism is plausible at 372 followers — Atlanta is his largest follower city (27, "
           "against Birmingham at 10) and Instagram surfaces by location. Measure NON-FOLLOWER SHARE "
-          "after the stories expire, not raw views; raw views move because he promoted it.", 3)]
+          "after the stories expire, not raw views; raw views move because he promoted it.", 3),
+         ("Margaret",  datetime.date(2026,10,22), "Debut carousel, riding Love of Your Life on Prime Video",
+          "Jackson, chat 2026-10-13: \"we have two Margaret Qualley illustrations... those would probably at most have two slides, not three\", and 2026-10-14: \"these are all already done\" and \"I think you can schedule all these\". Hook: Love of Your Life (dir. Rachel Morrison, Amazon MGM) premiered at TIFF 13 Sep, theatrical 7 Oct, Prime Video 14 Oct 2026. Placed the Thursday AFTER the drop, not the eve: a streaming release is not a single day, people work through a new title over the following weeks. Jackson asked for nothing new before the week of 19 Oct (busy week, chat 2026-10-14), which rules out the 14th and 15th. Deliberately a SECOND debut in Odessa II's week — permitted because this one is hooked and Odessa II is not — and placed Thursday rather than Wednesday so the two are not back to back, same reasoning as the Bea/Emma spacing.", 2),
+         ("Margaret",  datetime.date(2026,12,3),  "Second Qualley debut, day after Chanel Métiers d'art in Rome",
+          "Jackson, chat 2026-10-14: \"these are all already done\"; two slides per his note that the Qualleys have at most two. Hook: Chanel Métiers d'art 2027, Rome, Wed 2 Dec 2026 — Matthieu Blazy's first Métiers d'art for the house, date confirmed in trade press. Qualley is a Chanel ambassador and has worn Chanel at every appearance this autumn, but HER ATTENDANCE IS AN EXPECTATION, NOT A CONFIRMED FACT — the show date is the hook, her being in the photographs is the bet. Placed the day AFTER, because a runway show runs the opposite way to a release: the garments and arrivals images do not exist until it has happened. First hook in this calendar tied to a fashion moment rather than a release date.", 2),
+         ("Jessie",    datetime.date(2026,11,24), "Debut carousel, no hook in window — placed by cadence",
+          "Jackson, chat 2026-10-13: \"we have one Jesse Buckley illustration. That would be two, not three\", and 2026-10-14: \"these are all already done\". Hook search found nothing dated inside the window: her Best Actress Oscar for Hamnet was March 2026 and The Bride! released earlier in 2026, both spent; Hold On To Your Angels with Paul Mescal was announced May 2026 with no release date. Bond 26 casting chatter exists on aggregator sites with no reporting behind it — noise, not a hook, but if it is ever confirmed it is a large one and she should move to meet it. Takes the empty week that was being held for Alexa Chung, who is not drawn.", 2),
+         ("Chloé",     datetime.date(2026,12,8),  "Debut carousel, no hook — a working model has no release calendar",
+          "Jackson, chat 2026-10-13: \"we will have one for a model named Chloe Le Carreux that will have three\" — future tense there, resolved on 2026-10-14 when he said \"these are all already done\" and \"I think you can schedule all these\". Three slides, so this one has a timelapse. No hook and none possible: she is a working model with no release calendar, so she is placed by the cadence rule like Alexa Chung. Disqualifier scan 2026-10-14 found nothing at all — agency profiles, Fashion Model Directory, L'Officiel, one brand interview, no news coverage. Takes the empty week that was being held for Riley Pinkerton, who is not drawn.", 3)]
 
 for _who, _d, _why, _confirmed, _slides in POSTS:
     if not _confirmed.strip():
@@ -243,7 +257,11 @@ for who, d, why, hr in HOOKS:
 # Olivia II are second portraits of subjects who already have published work).
 # Remove a name once its debut has run. Skipping does not lose anyone's turn;
 # the queue just reaches them later.
-UNPUBLISHED = {"Katrin", "Emma", "Florence", "Samara", "Inde", "Bea"}
+UNPUBLISHED = {"Katrin", "Emma", "Florence", "Samara", "Inde", "Bea",
+               "Margaret", "Jessie", "Chloé"}
+# NOTE: DEBUTS below is a dict, so a subject with two debuts keeps the LATER date and
+# stays out of the rotation until then. For Margaret that changes nothing — the quiet
+# windows around 22 Oct and 3 Dec already overlap and cover the whole stretch.
 DEBUTS = {who: d for who, d, *_ in POSTS if who in UNPUBLISHED}
 # A subject is also ineligible while an off-schedule post of theirs is still recent.
 BLACKOUT = {who: d + datetime.timedelta(days=MIN_REPEAT_DAYS) for who, d, _why in POSTED}
